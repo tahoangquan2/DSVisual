@@ -60,7 +60,7 @@ CMakeLists.txt.user*
 *.vcxproj
 *vcxproj.*
 *.vs
-*DSVisual.tlog
+/x64/Release/DSVisual.tlog
 
 # MinGW generated files
 *.Debug

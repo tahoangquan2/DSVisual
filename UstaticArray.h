@@ -9,6 +9,8 @@ public:
 
 	UstaticArray(wxPanel* parent);
 
+	void showBox();
+
 	void goBack(wxCommandEvent& e);
 	void createRandom(wxCommandEvent& e);
 	void importFile(wxCommandEvent& e);

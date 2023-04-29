@@ -6,10 +6,10 @@ class Umenu : public wxPanel {
 public:
 	wxPanel* base = new wxPanel(this);
 	wxPanel* parent_setting = nullptr;
+	wxPanel* parent_static_array = nullptr;
 
 	Umenu(wxPanel* parent);
-
-private:
-	void toSetting(wxCommandEvent& eve);
+	void toSetting(wxCommandEvent& e);
+	void toStaticArray(wxCommandEvent& e);
 
 };

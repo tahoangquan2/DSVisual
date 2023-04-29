@@ -1,9 +1,7 @@
 ﻿  Umain.cpp
-  Umenu.cpp
-  Usetting.cpp
   Generating code
-  2 of 454 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
-    1 functions were new in current compilation
-    3 functions had inline decision re-evaluated but remain unchanged
+  1 of 490 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   DSVisual.vcxproj -> D:\Code\DSV\DSVisual\x64\Release\DSVisual.exe

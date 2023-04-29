@@ -9,7 +9,6 @@ public:
 
 	Usetting(wxPanel* parent);
 
-private:
-	void goBack(wxCommandEvent& eve);
+	void goBack(wxCommandEvent& e);
 
 };

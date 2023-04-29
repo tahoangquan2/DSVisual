@@ -6,6 +6,7 @@ class UstaticArray : public wxPanel {
 public:
 	wxPanel* base = new wxPanel(this);
 	wxPanel* parent = nullptr;
+	wxPanel* box[13];
 
 	UstaticArray(wxPanel* parent);
 

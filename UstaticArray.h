@@ -15,6 +15,7 @@ public:
 	void goBack(wxCommandEvent& e);
 	void createRandom(wxCommandEvent& e);
 	void importFile(wxCommandEvent& e);
+	void exportFile(wxCommandEvent& e);
 	void insertPosition(wxCommandEvent& e);
 	void deletePosition(wxCommandEvent& e);
 	void updatePosition(wxCommandEvent& e);

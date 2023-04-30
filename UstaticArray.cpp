@@ -14,7 +14,7 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	button_back->Bind(wxEVT_BUTTON, &UstaticArray::goBack, this);
 	button_create_random->Bind(wxEVT_BUTTON, &UstaticArray::createRandom, this);
 	button_import_file->Bind(wxEVT_BUTTON, &UstaticArray::importFile, this);
-	button_export_file->Bind(wxEVT_TEXT, &UstaticArray::exportFile, this);
+	button_export_file->Bind(wxEVT_BUTTON, &UstaticArray::exportFile, this);
 }
 
 void UstaticArray::goBack(wxCommandEvent& e) {
@@ -52,12 +52,33 @@ void UstaticArray::importFile(wxCommandEvent& e) {
 }
 
 void UstaticArray::exportFile(wxCommandEvent& e) {
-	wxFileDialog save_file_dialog(this, "Export .txt file", "", "", "Text files (*.txt)|*.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	if (rBoxSize(id_static_array) == 0) {
+		showError("There is no element");
+		return;
+	}
+
+	wxFileDialog save_file_dialog(this, _("Export File"), "", "", "Text files (*.txt)|*.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
 	if (save_file_dialog.ShowModal() == wxID_CANCEL) {
 		return;
 	}
+	
+	wxString selected_file_path = save_file_dialog.GetPath();
+	std::ofstream export_file;
+	std::string file_path = std::string(selected_file_path.mb_str());
 
-	wxString file_path = save_file_dialog.GetPath();
-	showError(file_path);
+	export_file.open(file_path, std::ofstream::out);
+
+	for (short i = 1; i <= max_size; ++i) {
+		if (rAtBox(id_static_array, i) == -1000) {
+			break;
+		}
+
+		if (i > 1) {
+			export_file << ",";
+		}
+		export_file << rAtBox(id_static_array, i);
+	}
+
+	export_file.close();
 }

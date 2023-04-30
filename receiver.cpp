@@ -8,6 +8,9 @@ int getRandom(int l, int r) {
 }
 
 void drawBox(wxPanel** boxs, wxPanel* base, short pos, int value) {
+	if (pos > max_size) {
+		return;
+	}
 	if (value == -1000) {
 		boxs[pos]->Destroy();
 		return;
@@ -66,6 +69,9 @@ void rStringToBox(short id, std::string& line, wxPanel** boxs, wxPanel* base) {
 	for (int i = 0; i < line.size(); ++i) {
 		if (line[i] == ',') {
 			++sz;
+			if (sz > 12) {
+				break;
+			}
 		}
 		else if ('0' <= line[i] && line[i] <= '9') {
 			value[sz] = value[sz] * 10 + int(line[i]) - int('0');
@@ -88,4 +94,25 @@ void rStringToBox(short id, std::string& line, wxPanel** boxs, wxPanel* base) {
 		}
 		break;
 	}
+}
+
+int rBoxSize(short id) {
+	switch (id) {
+	case id_static_array:
+		return BstaticArray::a_size;
+		break;
+	}
+	return 0;
+}
+
+int rAtBox(short id, short pos) {
+	switch (id) {
+	case id_static_array:
+		if (pos > BstaticArray::a_size) {
+			return -1000;
+		}
+		return BstaticArray::a[pos];
+		break;
+	}
+	return -1000;
 }

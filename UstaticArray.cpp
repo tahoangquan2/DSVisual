@@ -59,9 +59,11 @@ void UstaticArray::goBack(wxCommandEvent& e) {
 	rCreateRandom(id_static_array, box, base);
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
+		output_access_val = nullptr;
 	}
 	if (output_search_pos != nullptr) {
 		output_search_pos->Destroy();
+		output_search_pos = nullptr;
 	}
 }
 
@@ -74,9 +76,11 @@ void UstaticArray::createRandom(wxCommandEvent& e) {
 	input_access_pos->SetRange(0, rBoxSize(id_static_array) - 1);
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
+		output_access_val = nullptr;
 	}
 	if (output_search_pos != nullptr) {
 		output_search_pos->Destroy();
+		output_search_pos = nullptr;
 	}
 }
 
@@ -89,10 +93,13 @@ void UstaticArray::importFile(wxCommandEvent& e) {
 
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
+		output_access_val = nullptr;
 	}
 	if (output_search_pos != nullptr) {
 		output_search_pos->Destroy();
+		output_search_pos = nullptr;
 	}
+
 	wxString file_path = open_file_dialog.GetPath();
 	std::ifstream file(file_path.ToStdString());
 
@@ -147,9 +154,11 @@ void UstaticArray::insertPosition(wxCommandEvent& e) {
 	int value = input_insert_val->GetValue();
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
+		output_access_val = nullptr;
 	}
 	if (output_search_pos != nullptr) {
 		output_search_pos->Destroy();
+		output_search_pos = nullptr;
 	}
 	rInsert(id_static_array, pos, value, box, base);
 }
@@ -158,9 +167,11 @@ void UstaticArray::deletePosition(wxCommandEvent& e) {
 	short pos = input_delete_pos->GetValue();
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
+		output_access_val = nullptr;
 	}
 	if (output_search_pos != nullptr) {
 		output_search_pos->Destroy();
+		output_search_pos = nullptr;
 	}
 	rDelete(id_static_array, pos, box, base);
 }
@@ -170,9 +181,11 @@ void UstaticArray::updatePosition(wxCommandEvent& e) {
 	int value = input_update_val->GetValue();
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
+		output_access_val = nullptr;
 	}
 	if (output_search_pos != nullptr) {
 		output_search_pos->Destroy();
+		output_search_pos = nullptr;
 	}
 	rUpdate(id_static_array, pos, value, box, base);
 }
@@ -185,6 +198,7 @@ void UstaticArray::accessPosition(wxCommandEvent& e) {
 
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
+		output_access_val = nullptr;
 	}
 	output_access_val = new wxStaticText(base, wxID_ANY, text, wxPoint(775, 475));
 	output_access_val->Show();
@@ -204,6 +218,7 @@ void UstaticArray::searchValue(wxCommandEvent& e) {
 
 	if (output_search_pos != nullptr) {
 		output_search_pos->Destroy();
+		output_search_pos = nullptr;
 	}
 	output_search_pos = new wxStaticText(base, wxID_ANY, text, wxPoint(905, 475));
 	output_search_pos->Show();

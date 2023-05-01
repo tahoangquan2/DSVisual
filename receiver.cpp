@@ -22,9 +22,11 @@ void drawBox(wxPanel** boxs, wxPanel* base, short pos, int value) {
 		wxString empty_space = " ";
 		if (boxs[pos] != nullptr) {
 			boxs[pos]->Destroy();
+			boxs[pos] = nullptr;
 		}
 		if (id_pos[pos] != nullptr) {
 			id_pos[pos]->Destroy();
+			id_pos[pos] = nullptr;
 		}
 		return;
 	}

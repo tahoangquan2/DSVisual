@@ -17,10 +17,9 @@ public:
 	wxStaticText* output_access_val = nullptr;
 	wxSpinCtrl* input_search_val = nullptr;
 	wxStaticText* output_search_pos = nullptr;
+	bool sbs_mode = false;
 
 	UstaticArray(wxPanel* parent);
-
-	void showBox();
 
 	void goBack(wxCommandEvent& e);
 	void createRandom(wxCommandEvent& e);
@@ -31,4 +30,5 @@ public:
 	void updatePosition(wxCommandEvent& e);
 	void accessPosition(wxCommandEvent& e);
 	void searchValue(wxCommandEvent& e);
+	void sbsModeOn(wxCommandEvent& e);
 };

@@ -16,6 +16,7 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	wxButton* button_update = new wxButton(base, wxID_ANY, "Update", wxPoint(590, 570), wxSize(110, 45));
 	wxButton* button_access = new wxButton(base, wxID_ANY, "Access", wxPoint(720, 570), wxSize(110, 45));
 	wxButton* button_search = new wxButton(base, wxID_ANY, "Search", wxPoint(850, 570), wxSize(110, 45));
+	wxButton* button_sbs = new wxButton(base, wxID_ANY, "Step by Step", wxPoint(330, 10), wxSize(110, 45));
 
 	wxStaticText* text_insert_pos = new wxStaticText(base, wxID_ANY, "Position:", wxPoint(330, 512));
 	wxStaticText* text_insert_val = new wxStaticText(base, wxID_ANY, "Value:", wxPoint(330, 452));
@@ -44,6 +45,7 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	button_update->Bind(wxEVT_BUTTON, &UstaticArray::updatePosition, this);
 	button_access->Bind(wxEVT_BUTTON, &UstaticArray::accessPosition, this);
 	button_search->Bind(wxEVT_BUTTON, &UstaticArray::searchValue, this);
+	button_sbs->Bind(wxEVT_BUTTON, &UstaticArray::sbsModeOn, this);
 
 	rClear(id_static_array, box, base);
 	rCreateRandom(id_static_array, box, base);
@@ -222,4 +224,8 @@ void UstaticArray::searchValue(wxCommandEvent& e) {
 	}
 	output_search_pos = new wxStaticText(base, wxID_ANY, text, wxPoint(905, 475));
 	output_search_pos->Show();
+}
+
+void UstaticArray::sbsModeOn(wxCommandEvent& e) {
+	sbs_mode = true;
 }

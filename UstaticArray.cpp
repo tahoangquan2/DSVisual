@@ -15,6 +15,7 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	wxButton* button_delete = new wxButton(base, wxID_ANY, "Delete", wxPoint(460, 570), wxSize(110, 45));
 	wxButton* button_update = new wxButton(base, wxID_ANY, "Update", wxPoint(590, 570), wxSize(110, 45));
 	wxButton* button_access = new wxButton(base, wxID_ANY, "Access", wxPoint(720, 570), wxSize(110, 45));
+	wxButton* button_search = new wxButton(base, wxID_ANY, "Search", wxPoint(850, 570), wxSize(110, 45));
 
 	wxStaticText* text_insert_pos = new wxStaticText(base, wxID_ANY, "Position:", wxPoint(330, 512));
 	wxStaticText* text_insert_val = new wxStaticText(base, wxID_ANY, "Value:", wxPoint(330, 452));
@@ -23,6 +24,8 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	wxStaticText* text_update_val = new wxStaticText(base, wxID_ANY, "Value:", wxPoint(590, 452));
 	wxStaticText* text_access_pos = new wxStaticText(base, wxID_ANY, "Position:", wxPoint(720, 512));
 	wxStaticText* text_access_val = new wxStaticText(base, wxID_ANY, "Value:", wxPoint(720, 475));
+	wxStaticText* text_search_pos = new wxStaticText(base, wxID_ANY, "Value:", wxPoint(850, 512));
+	wxStaticText* text_search_val = new wxStaticText(base, wxID_ANY, "Position:", wxPoint(850, 475));
 
 	input_insert_pos = new wxSpinCtrl(base, wxID_ANY, "", wxPoint(330, 530), wxSize(110, 25), wxSP_WRAP, 0, 0);
 	input_insert_val = new wxSpinCtrl(base, wxID_ANY, "", wxPoint(330, 470), wxSize(110, 25), wxSP_WRAP, -999, 999);
@@ -30,6 +33,7 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	input_update_pos = new wxSpinCtrl(base, wxID_ANY, "", wxPoint(590, 530), wxSize(110, 25), wxSP_WRAP, 0, 0);
 	input_update_val = new wxSpinCtrl(base, wxID_ANY, "", wxPoint(590, 470), wxSize(110, 25), wxSP_WRAP, -999, 999);
 	input_access_pos = new wxSpinCtrl(base, wxID_ANY, "", wxPoint(720, 530), wxSize(110, 25), wxSP_WRAP, 0, 0);
+	input_search_val = new wxSpinCtrl(base, wxID_ANY, "", wxPoint(850, 530), wxSize(110, 25), wxSP_WRAP, -999, 999);
 
 	button_back->Bind(wxEVT_BUTTON, &UstaticArray::goBack, this);
 	button_create_random->Bind(wxEVT_BUTTON, &UstaticArray::createRandom, this);
@@ -39,6 +43,7 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	button_delete->Bind(wxEVT_BUTTON, &UstaticArray::deletePosition, this);
 	button_update->Bind(wxEVT_BUTTON, &UstaticArray::updatePosition, this);
 	button_access->Bind(wxEVT_BUTTON, &UstaticArray::accessPosition, this);
+	button_search->Bind(wxEVT_BUTTON, &UstaticArray::searchValue, this);
 
 	rClear(id_static_array, box, base);
 	rCreateRandom(id_static_array, box, base);
@@ -46,14 +51,18 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	input_delete_pos->SetRange(0, rBoxSize(id_static_array) - 1);
 	input_update_pos->SetRange(0, rBoxSize(id_static_array) - 1);
 	input_access_pos->SetRange(0, rBoxSize(id_static_array) - 1);
-	input_access_pos->SetRange(0, rBoxSize(id_static_array) - 1);
 }
 
 void UstaticArray::goBack(wxCommandEvent& e) {
 	rGoToPanel(this, parent);
 	rClear(id_static_array, box, base);
 	rCreateRandom(id_static_array, box, base);
-	output_access_val->Destroy();
+	if (output_access_val != nullptr) {
+		output_access_val->Destroy();
+	}
+	if (output_search_pos != nullptr) {
+		output_search_pos->Destroy();
+	}
 }
 
 void UstaticArray::createRandom(wxCommandEvent& e) {
@@ -63,7 +72,12 @@ void UstaticArray::createRandom(wxCommandEvent& e) {
 	input_delete_pos->SetRange(0, rBoxSize(id_static_array) - 1);
 	input_update_pos->SetRange(0, rBoxSize(id_static_array) - 1);
 	input_access_pos->SetRange(0, rBoxSize(id_static_array) - 1);
-	input_access_pos->SetRange(0, rBoxSize(id_static_array) - 1);
+	if (output_access_val != nullptr) {
+		output_access_val->Destroy();
+	}
+	if (output_search_pos != nullptr) {
+		output_search_pos->Destroy();
+	}
 }
 
 void UstaticArray::importFile(wxCommandEvent& e) {
@@ -73,7 +87,12 @@ void UstaticArray::importFile(wxCommandEvent& e) {
 		return;
 	}
 
-	output_access_val->Destroy();
+	if (output_access_val != nullptr) {
+		output_access_val->Destroy();
+	}
+	if (output_search_pos != nullptr) {
+		output_search_pos->Destroy();
+	}
 	wxString file_path = open_file_dialog.GetPath();
 	std::ifstream file(file_path.ToStdString());
 
@@ -126,28 +145,66 @@ void UstaticArray::exportFile(wxCommandEvent& e) {
 void UstaticArray::insertPosition(wxCommandEvent& e) {
 	short pos = input_insert_pos->GetValue();
 	int value = input_insert_val->GetValue();
-	output_access_val->Destroy();
+	if (output_access_val != nullptr) {
+		output_access_val->Destroy();
+	}
+	if (output_search_pos != nullptr) {
+		output_search_pos->Destroy();
+	}
 	rInsert(id_static_array, pos, value, box, base);
 }
 
 void UstaticArray::deletePosition(wxCommandEvent& e) {
 	short pos = input_delete_pos->GetValue();
-	output_access_val->Destroy();
+	if (output_access_val != nullptr) {
+		output_access_val->Destroy();
+	}
+	if (output_search_pos != nullptr) {
+		output_search_pos->Destroy();
+	}
 	rDelete(id_static_array, pos, box, base);
 }
 
 void UstaticArray::updatePosition(wxCommandEvent& e) {
 	short pos = input_update_pos->GetValue();
 	int value = input_update_val->GetValue();
-	output_access_val->Destroy();
+	if (output_access_val != nullptr) {
+		output_access_val->Destroy();
+	}
+	if (output_search_pos != nullptr) {
+		output_search_pos->Destroy();
+	}
 	rUpdate(id_static_array, pos, value, box, base);
 }
 
 void UstaticArray::accessPosition(wxCommandEvent& e) {
 	short pos = input_access_pos->GetValue();
-	int val = rAtBox(id_static_array, pos + 1);
+	int value = rAtBox(id_static_array, pos + 1);
 	wxString text = "";
-	text << val;
-	
+	text << value;
+
+	if (output_access_val != nullptr) {
+		output_access_val->Destroy();
+	}
 	output_access_val = new wxStaticText(base, wxID_ANY, text, wxPoint(775, 475));
+	output_access_val->Show();
+}
+
+void UstaticArray::searchValue(wxCommandEvent& e) {
+	int value = input_search_val->GetValue();
+	short pos = rSearch(id_static_array, value);
+	wxString text = "";
+
+	if (pos == -1) {
+		text = "None";
+	}
+	else {
+		text << pos;
+	}
+
+	if (output_search_pos != nullptr) {
+		output_search_pos->Destroy();
+	}
+	output_search_pos = new wxStaticText(base, wxID_ANY, text, wxPoint(905, 475));
+	output_search_pos->Show();
 }

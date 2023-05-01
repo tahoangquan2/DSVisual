@@ -19,9 +19,13 @@ void drawBox(wxPanel** boxs, wxPanel* base, short pos, int value) {
 	}
 
 	if (value == -1000) {
-		boxs[pos]->Destroy();
 		wxString empty_space = " ";
-		id_pos[pos]->Destroy();
+		if (boxs[pos] != nullptr) {
+			boxs[pos]->Destroy();
+		}
+		if (id_pos[pos] != nullptr) {
+			id_pos[pos]->Destroy();
+		}
 		return;
 	}
 
@@ -140,6 +144,19 @@ void rUpdate(short id, short pos, int value, wxPanel** boxs, wxPanel* base) {
 		drawBox(boxs, base, pos, -1000);
 		drawBox(boxs, base, pos, BstaticArray::a[pos]);
 	}
+}
+
+short rSearch(short id, int value) {
+	switch (id) {
+	case id_static_array:
+		for (short i = 1; i <= BstaticArray::a_size; ++i) {
+			if (BstaticArray::a[i] == value) {
+				return i - 1;
+			}
+		}
+		break;
+	}
+	return -1;
 }
 
 int rBoxSize(short id) {

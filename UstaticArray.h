@@ -15,6 +15,8 @@ public:
 	wxSpinCtrl* input_update_val = nullptr;
 	wxSpinCtrl* input_access_pos = nullptr;
 	wxStaticText* output_access_val = nullptr;
+	wxSpinCtrl* input_search_val = nullptr;
+	wxStaticText* output_search_pos = nullptr;
 
 	UstaticArray(wxPanel* parent);
 

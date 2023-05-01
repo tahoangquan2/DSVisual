@@ -11,6 +11,10 @@ public:
 	wxSpinCtrl* input_insert_pos = nullptr;
 	wxSpinCtrl* input_insert_val = nullptr;
 	wxSpinCtrl* input_delete_pos = nullptr;
+	wxSpinCtrl* input_update_pos = nullptr;
+	wxSpinCtrl* input_update_val = nullptr;
+	wxSpinCtrl* input_access_pos = nullptr;
+	wxStaticText* output_access_val = nullptr;
 
 	UstaticArray(wxPanel* parent);
 

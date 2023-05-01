@@ -132,6 +132,16 @@ void rDelete(short id, short pos, wxPanel** boxs, wxPanel* base) {
 	}
 }
 
+void rUpdate(short id, short pos, int value, wxPanel** boxs, wxPanel* base) {
+	switch (id) {
+	case id_static_array:
+		++pos;
+		BstaticArray::a[pos] = value;
+		drawBox(boxs, base, pos, -1000);
+		drawBox(boxs, base, pos, BstaticArray::a[pos]);
+	}
+}
+
 int rBoxSize(short id) {
 	switch (id) {
 	case id_static_array:

@@ -11,6 +11,7 @@ void rCreateRandom(short id, wxPanel** boxs, wxPanel* base);
 void rStringToBox(short id, std::string& line, wxPanel** boxs, wxPanel* base);
 void rInsert(short id, short pos, int value, wxPanel** boxs, wxPanel* base);
 void rDelete(short id, short pos, wxPanel** boxs, wxPanel* base);
+void rUpdate(short id, short pos, int value, wxPanel** boxs, wxPanel* base);
 
 int rBoxSize(short id);
 int rAtBox(short id, short pos);

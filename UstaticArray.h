@@ -1,5 +1,6 @@
 #pragma once
 #include <wx/wx.h>
+#include <wx/spinctrl.h>
 
 class UstaticArray : public wxPanel {
 
@@ -7,6 +8,9 @@ public:
 	wxPanel* base = new wxPanel(this);
 	wxPanel* parent = nullptr;
 	wxPanel* box[13];
+	wxSpinCtrl* input_insert_pos = nullptr;
+	wxSpinCtrl* input_insert_val = nullptr;
+	wxSpinCtrl* input_delete_pos = nullptr;
 
 	UstaticArray(wxPanel* parent);
 

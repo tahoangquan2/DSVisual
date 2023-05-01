@@ -9,6 +9,10 @@ int getRandom(int l, int r) {
 	return (rand() % (r - l + 1)) + l;
 }
 
+void showError(wxString message) {
+	wxMessageBox(message, wxT("Error"), wxICON_ERROR);
+}
+
 void drawBox(wxPanel** boxs, wxPanel* base, short pos, int value) {
 	if (pos > max_size) {
 		return;
@@ -34,10 +38,6 @@ void drawBox(wxPanel** boxs, wxPanel* base, short pos, int value) {
 	id_pos[pos] = new wxStaticText(base, wxID_ANY, display_value, wxPoint(box_position[pos] + 20, box_y + 60));
 }
 
-void showError(wxString message) {
-	wxMessageBox(message, wxT("Error"), wxICON_ERROR);
-}
-
 void rGoToPanel(wxPanel* current_panel, wxPanel* goto_panel) {
 	current_panel->Hide();
 	goto_panel->Show();
@@ -47,6 +47,7 @@ void rClear(short id, wxPanel** boxs, wxPanel* base) {
 	switch (id) {
 	case id_static_array:
 		for (int i = 1; i <= BstaticArray::a_size; ++i) {
+			BstaticArray::a[i] = 0;
 			drawBox(boxs, base, i, -1000);
 		}
 		BstaticArray::a_size = 0;
@@ -104,6 +105,30 @@ void rStringToBox(short id, std::string& line, wxPanel** boxs, wxPanel* base) {
 			drawBox(boxs, base, i, BstaticArray::a[i]);
 		}
 		break;
+	}
+}
+
+void rInsert(short id, short pos, int value, wxPanel** boxs, wxPanel* base) {
+	switch (id) {
+	case id_static_array:
+		++pos;
+		BstaticArray::insertPosition(pos, value);
+		for (short i = 1; i <= BstaticArray::a_size; ++i) {
+			drawBox(boxs, base, i, -1000);
+			drawBox(boxs, base, i, BstaticArray::a[i]);
+		}
+	}
+}
+
+void rDelete(short id, short pos, wxPanel** boxs, wxPanel* base) {
+	switch (id) {
+	case id_static_array:
+		++pos;
+		BstaticArray::deletePosition(pos);
+		for (short i = 1; i <= BstaticArray::a_size; ++i) {
+			drawBox(boxs, base, i, -1000);
+			drawBox(boxs, base, i, BstaticArray::a[i]);
+		}
 	}
 }
 

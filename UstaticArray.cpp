@@ -12,21 +12,27 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	wxButton* button_import_file = new wxButton(base, wxID_ANY, "Import File", wxPoint(200, 570), wxSize(110, 45));
 	wxButton* button_export_file = new wxButton(base, wxID_ANY, "Export File", wxPoint(200, 510), wxSize(110, 45));
 	wxButton* button_insert = new wxButton(base, wxID_ANY, "Insert", wxPoint(330, 570), wxSize(110, 45));
+	wxButton* button_delete = new wxButton(base, wxID_ANY, "Delete", wxPoint(460, 570), wxSize(110, 45));
 
 	wxStaticText* text_insert_pos = new wxStaticText(base, wxID_ANY, "Position:", wxPoint(330, 512));
 	wxStaticText* text_insert_val = new wxStaticText(base, wxID_ANY, "Value:", wxPoint(330, 452));
+	wxStaticText* text_delete_pos = new wxStaticText(base, wxID_ANY, "Position:", wxPoint(460, 512));
 
-	wxSpinCtrl* input_insert_pos = new wxSpinCtrl(base, wxID_ANY, "", wxPoint(330, 530), wxSize(110, 25));
-	wxSpinCtrl* input_insert_val = new wxSpinCtrl(base, wxID_ANY, "", wxPoint(330, 470), wxSize(110, 25));
+	input_insert_pos = new wxSpinCtrl(base, wxID_ANY, "", wxPoint(330, 530), wxSize(110, 25), wxSP_WRAP, 0, 0);
+	input_insert_val = new wxSpinCtrl(base, wxID_ANY, "", wxPoint(330, 470), wxSize(110, 25), wxSP_WRAP, -999, 999);
+	input_delete_pos = new wxSpinCtrl(base, wxID_ANY, "", wxPoint(460, 530), wxSize(110, 25), wxSP_WRAP, 0, 0);
 
 	button_back->Bind(wxEVT_BUTTON, &UstaticArray::goBack, this);
 	button_create_random->Bind(wxEVT_BUTTON, &UstaticArray::createRandom, this);
 	button_import_file->Bind(wxEVT_BUTTON, &UstaticArray::importFile, this);
 	button_export_file->Bind(wxEVT_BUTTON, &UstaticArray::exportFile, this);
-	//button_insert = new wxButton(base, wxID_ANY, "")
+	button_insert->Bind(wxEVT_BUTTON, &UstaticArray::insertPosition, this);
+	button_delete->Bind(wxEVT_BUTTON, &UstaticArray::deletePosition, this);
 
 	rClear(id_static_array, box, base);
 	rCreateRandom(id_static_array, box, base);
+	input_insert_pos->SetRange(0, rBoxSize(id_static_array) - 1);
+	input_delete_pos->SetRange(0, rBoxSize(id_static_array) - 1);
 }
 
 void UstaticArray::goBack(wxCommandEvent& e) {
@@ -38,6 +44,7 @@ void UstaticArray::goBack(wxCommandEvent& e) {
 void UstaticArray::createRandom(wxCommandEvent& e) {
 	rClear(id_static_array, box, base);
 	rCreateRandom(id_static_array, box, base);
+	input_insert_pos->SetRange(0, rBoxSize(id_static_array) - 1);
 }
 
 void UstaticArray::importFile(wxCommandEvent& e) {
@@ -57,6 +64,7 @@ void UstaticArray::importFile(wxCommandEvent& e) {
 		line = "," + line;
 		rClear(id_static_array, box, base);
 		rStringToBox(id_static_array, line, box, base);
+		input_insert_pos->SetRange(0, rBoxSize(id_static_array) - 1);
 	}
 	else {
 		showError(wxT("Cannot open file"));
@@ -93,4 +101,15 @@ void UstaticArray::exportFile(wxCommandEvent& e) {
 	}
 
 	export_file.close();
+}
+
+void UstaticArray::insertPosition(wxCommandEvent& e) {
+	short pos = input_insert_pos->GetValue();
+	int value = input_insert_val->GetValue();
+	rInsert(id_static_array, pos, value, box, base);
+}
+
+void UstaticArray::deletePosition(wxCommandEvent& e) {
+	short pos = input_delete_pos->GetValue();
+	rDelete(id_static_array, pos, box, base);
 }

@@ -16,4 +16,19 @@ namespace BstaticArray {
 		return true;
 	}
 
+	bool insertPosition(short pos, int value) {
+		for (short i = a_size; i >= pos; --i) {
+			a[i + 1] = a[i];
+		}
+		a[pos] = value;
+		return true;
+	}
+
+	bool deletePosition(short pos) {
+		for (short i = pos; i < a_size; ++i) {
+			a[i] = a[i + 1];
+		}
+		a[a_size] = 0;
+		return true;
+	}
 };

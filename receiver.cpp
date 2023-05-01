@@ -3,6 +3,8 @@
 #include "BstaticArray.h"
 #include <time.h>
 
+wxStaticText* id_pos[13];
+
 int getRandom(int l, int r) {
 	return (rand() % (r - l + 1)) + l;
 }
@@ -11,16 +13,25 @@ void drawBox(wxPanel** boxs, wxPanel* base, short pos, int value) {
 	if (pos > max_size) {
 		return;
 	}
+
 	if (value == -1000) {
 		boxs[pos]->Destroy();
+		wxString empty_space = " ";
+		id_pos[pos]->Destroy();
 		return;
 	}
+
 	boxs[pos] = new wxPanel(base, wxID_ANY, wxPoint(box_position[pos], box_y), wxSize(box_size, box_size), wxBORDER_DOUBLE);
 	boxs[pos]->SetBackgroundColour(wxColour(box_color, box_color, box_color));
+
 	wxString display_value;
 	display_value << value;
-	wxStaticText* test = new wxStaticText(boxs[pos], wxID_ANY, display_value);
-	test->Center();
+	wxStaticText* text = new wxStaticText(boxs[pos], wxID_ANY, display_value);
+	text->Center();
+
+	display_value = "";
+	display_value << (pos - 1);
+	id_pos[pos] = new wxStaticText(base, wxID_ANY, display_value, wxPoint(box_position[pos] + 20, box_y + 60));
 }
 
 void showError(wxString message) {
@@ -50,7 +61,7 @@ void rCreateRandom(short id, wxPanel** boxs, wxPanel* base) {
 	case id_static_array:
 		short random_size = getRandom(3, 12);
 		for (short i = 1; i <= random_size; ++i) {
-			BstaticArray::addBox(getRandom(-999, 999));
+			BstaticArray::addBox(getRandom(1, 69));
 			drawBox(boxs, base, i, BstaticArray::a[i]);
 		}
 		break;

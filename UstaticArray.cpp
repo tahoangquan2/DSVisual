@@ -1,6 +1,7 @@
 #include "receiver.h"
 #include "UstaticArray.h"
 #include <wx/wx.h>
+#include <wx/spinctrl.h>
 #include <fstream>
 
 UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
@@ -10,11 +11,22 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	wxButton* button_create_random = new wxButton(base, wxID_ANY, "Create Random", wxPoint(70, 570), wxSize(110, 45));
 	wxButton* button_import_file = new wxButton(base, wxID_ANY, "Import File", wxPoint(200, 570), wxSize(110, 45));
 	wxButton* button_export_file = new wxButton(base, wxID_ANY, "Export File", wxPoint(200, 510), wxSize(110, 45));
+	wxButton* button_insert = new wxButton(base, wxID_ANY, "Insert", wxPoint(330, 570), wxSize(110, 45));
+
+	wxStaticText* text_insert_pos = new wxStaticText(base, wxID_ANY, "Position:", wxPoint(330, 512));
+	wxStaticText* text_insert_val = new wxStaticText(base, wxID_ANY, "Value:", wxPoint(330, 452));
+
+	wxSpinCtrl* input_insert_pos = new wxSpinCtrl(base, wxID_ANY, "", wxPoint(330, 530), wxSize(110, 25));
+	wxSpinCtrl* input_insert_val = new wxSpinCtrl(base, wxID_ANY, "", wxPoint(330, 470), wxSize(110, 25));
 
 	button_back->Bind(wxEVT_BUTTON, &UstaticArray::goBack, this);
 	button_create_random->Bind(wxEVT_BUTTON, &UstaticArray::createRandom, this);
 	button_import_file->Bind(wxEVT_BUTTON, &UstaticArray::importFile, this);
 	button_export_file->Bind(wxEVT_BUTTON, &UstaticArray::exportFile, this);
+	//button_insert = new wxButton(base, wxID_ANY, "")
+
+	rClear(id_static_array, box, base);
+	rCreateRandom(id_static_array, box, base);
 }
 
 void UstaticArray::goBack(wxCommandEvent& e) {

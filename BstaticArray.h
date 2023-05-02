@@ -3,8 +3,8 @@
 #include <wx/wx.h>
 
 namespace BstaticArray {
-	short a_size = 0;
-	int a[15];
+	short a_size = 0, b_size = 0, current, pos, mode;
+	int a[15], b[15], value;
 
 	bool addBox(int value = 0) {
 		if (a_size == max_size) {
@@ -29,6 +29,20 @@ namespace BstaticArray {
 			a[i] = a[i + 1];
 		}
 		a[a_size] = 0;
+		return true;
+	}
+
+	bool setup(short p, int v, short signal) {
+		pos = p;
+		value = v;
+		mode = signal;
+		b_size = a_size;
+		for (short i = 1; i <= a_size; ++i) {
+			b[i] = a[i];
+		}
+		if (mode == 1) {
+			current = b_size;
+		}
 		return true;
 	}
 };

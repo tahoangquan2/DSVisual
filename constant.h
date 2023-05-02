@@ -1,4 +1,5 @@
 #pragma once
+#include <wx/wx.h>
 
 const short id_static_array = 1;
 

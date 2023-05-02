@@ -17,7 +17,13 @@ public:
 	wxStaticText* output_access_val = nullptr;
 	wxSpinCtrl* input_search_val = nullptr;
 	wxStaticText* output_search_pos = nullptr;
+	wxButton* button_sbs = nullptr;
+	wxButton* button_sbs2 = nullptr;
 	bool sbs_mode = false;
+	wxButton* button_next = nullptr;
+	wxButton* button_skip = nullptr;
+	wxStaticBitmap* arrow = nullptr;
+	bool during_sbs = false;
 
 	UstaticArray(wxPanel* parent);
 
@@ -31,4 +37,7 @@ public:
 	void accessPosition(wxCommandEvent& e);
 	void searchValue(wxCommandEvent& e);
 	void sbsModeOn(wxCommandEvent& e);
+	void sbsModeOff(wxCommandEvent& e);
+	void nextStep(wxCommandEvent& e);
+	void skipStep(wxCommandEvent& e);
 };

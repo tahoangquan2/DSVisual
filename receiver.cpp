@@ -181,3 +181,11 @@ int rAtBox(short id, short pos) {
 	}
 	return -1000;
 }
+
+void rInsertSbs(short id, short pos, int value, wxPanel** boxs, wxPanel* base) {
+	switch (id) {
+	case id_static_array:
+		++pos;
+		BstaticArray::setup(pos, value, 1);
+	}
+}

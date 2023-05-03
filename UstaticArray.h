@@ -24,6 +24,8 @@ public:
 	wxButton* button_skip = nullptr;
 	wxStaticBitmap* arrow = nullptr;
 	bool during_sbs = false;
+	short fix_pos = 0;
+	int fix_val = 0;
 
 	UstaticArray(wxPanel* parent);
 

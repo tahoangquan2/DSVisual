@@ -59,6 +59,8 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	button_search->Bind(wxEVT_BUTTON, &UstaticArray::searchValue, this);
 	button_sbs->Bind(wxEVT_BUTTON, &UstaticArray::sbsModeOn, this);
 	button_sbs2->Bind(wxEVT_BUTTON, &UstaticArray::sbsModeOff, this);
+	button_next->Bind(wxEVT_BUTTON, &UstaticArray::nextStep, this);
+	button_skip->Bind(wxEVT_BUTTON, &UstaticArray::skipStep, this);
 
 	wxCommandEvent empty_e = wxCommandEvent();
 	createRandom(empty_e);
@@ -67,8 +69,8 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 void UstaticArray::goBack(wxCommandEvent& e) {
 	rGoToPanel(this, parent);
 	wxCommandEvent empty_e = wxCommandEvent();
-	createRandom(empty_e);
 	sbsModeOff(empty_e);
+	createRandom(empty_e);
 }
 
 void UstaticArray::createRandom(wxCommandEvent& e) {
@@ -184,8 +186,10 @@ void UstaticArray::insertPosition(wxCommandEvent& e) {
 		rInsert(id_static_array, pos, value, box, base);
 	}
 	else {
+		fix_pos = pos;
+		fix_val = value;
 		during_sbs = true;
-		rInsertSbs(id_static_array, pos, value, box, base);
+		rInsertSbs(id_static_array, pos, value, arrow);
 	}
 }
 
@@ -279,11 +283,34 @@ void UstaticArray::sbsModeOff(wxCommandEvent& e) {
 	button_next->Hide();
 	button_skip->Hide();
 	arrow->Hide();
+	wxCommandEvent empty_e = wxCommandEvent();
+	skipStep(empty_e);
 }
 
 void UstaticArray::nextStep(wxCommandEvent& e) {
 	if (during_sbs == false) {
 		return;
 	}
+	if (rNext(id_static_array, box, base, arrow)) {
+		during_sbs = false;
+		wxCommandEvent empty_e = wxCommandEvent();
+		switch (rSbsMode(id_static_array)) {
+		case 1:
+			rInsert(id_static_array, fix_pos, fix_val, box, base);
+			break;
+		}
+	}
+}
 
+void UstaticArray::skipStep(wxCommandEvent& e) {
+	if (during_sbs == false) {
+		return;
+	}
+	during_sbs = false;
+	wxCommandEvent empty_e = wxCommandEvent();
+	switch (rSbsMode(id_static_array)) {
+	case 1:
+		rInsert(id_static_array, fix_pos, fix_val, box, base);
+		break;
+	}
 }

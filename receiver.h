@@ -4,6 +4,7 @@
 
 void showError(wxString message);
 void drawBox(wxPanel** boxs, wxPanel* base, short pos, int value);
+void drawArrow(wxStaticBitmap* arrow, short pos);
 
 void rGoToPanel(wxPanel* current_panel, wxPanel* goto_panel);
 void rClear(short id, wxPanel** boxs, wxPanel* base);
@@ -13,7 +14,9 @@ void rInsert(short id, short pos, int value, wxPanel** boxs, wxPanel* base);
 void rDelete(short id, short pos, wxPanel** boxs, wxPanel* base);
 void rUpdate(short id, short pos, int value, wxPanel** boxs, wxPanel* base);
 short rSearch(short id, int value);
-void rInsertSbs(short id, short pos, int value, wxPanel** boxs, wxPanel* base);
+bool rNext(short id, wxPanel** boxs, wxPanel* base, wxStaticBitmap* arrow);
+void rInsertSbs(short id, short pos, int value, wxStaticBitmap* arrow);
 
 int rBoxSize(short id);
 int rAtBox(short id, short pos);
+short rSbsMode(short id);

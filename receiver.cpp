@@ -44,6 +44,11 @@ void drawBox(wxPanel** boxs, wxPanel* base, short pos, int value) {
 	id_pos[pos] = new wxStaticText(base, wxID_ANY, display_value, wxPoint(box_position[pos] + 20, box_y + 60));
 }
 
+void drawArrow(wxStaticBitmap* arrow, short pos) {
+	arrow->Show();
+	arrow->SetPosition(wxPoint(box_position[pos] + 10, box_y - 50));
+}
+
 void rGoToPanel(wxPanel* current_panel, wxPanel* goto_panel) {
 	current_panel->Hide();
 	goto_panel->Show();
@@ -161,6 +166,30 @@ short rSearch(short id, int value) {
 	return -1;
 }
 
+bool rNext(short id, wxPanel** boxs, wxPanel* base, wxStaticBitmap* arrow) {
+	switch (id) {
+	case id_static_array:
+		if (BstaticArray::next() == true) {
+			return true;
+		}
+		drawArrow(arrow, BstaticArray::current);
+		for (short i = BstaticArray::current; i <= BstaticArray::b_size; ++i) {
+			drawBox(boxs, base, i, -1000);
+			drawBox(boxs, base, i, BstaticArray::b[i]);
+		}
+		break;
+	}
+}
+
+void rInsertSbs(short id, short pos, int value, wxStaticBitmap* arrow) {
+	switch (id) {
+	case id_static_array:
+		++pos;
+		BstaticArray::setup(pos, value, 1);
+		drawArrow(arrow, BstaticArray::current);
+	}
+}
+
 int rBoxSize(short id) {
 	switch (id) {
 	case id_static_array:
@@ -182,10 +211,11 @@ int rAtBox(short id, short pos) {
 	return -1000;
 }
 
-void rInsertSbs(short id, short pos, int value, wxPanel** boxs, wxPanel* base) {
+short rSbsMode(short id) {
 	switch (id) {
 	case id_static_array:
-		++pos;
-		BstaticArray::setup(pos, value, 1);
+		return BstaticArray::mode;
+		break;
 	}
+	return 0;
 }

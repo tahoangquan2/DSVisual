@@ -1,5 +1,4 @@
-#pragma once
-#include <wx/wx.h>
+#include "constant.h"
 
 class Usetting : public wxPanel {
 

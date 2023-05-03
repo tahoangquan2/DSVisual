@@ -1,7 +1,8 @@
 #include "receiver.h"
+
 #include "UstaticArray.h"
+
 #include "BstaticArray.h"
-#include <time.h>
 
 wxStaticText* id_pos[13];
 
@@ -13,12 +14,12 @@ void showError(wxString message) {
 	wxMessageBox(message, wxT("Error"), wxICON_ERROR);
 }
 
-void drawBox(wxPanel** boxs, wxPanel* base, short pos, int value) {
+void drawBox(wxPanel** boxs, wxPanel* base, short pos, short val = -1000) {
 	if (pos > max_size) {
 		return;
 	}
 
-	if (value == -1000) {
+	if (val == -1000) {
 		wxString empty_space = " ";
 		if (boxs[pos] != nullptr) {
 			boxs[pos]->Destroy();
@@ -35,7 +36,7 @@ void drawBox(wxPanel** boxs, wxPanel* base, short pos, int value) {
 	boxs[pos]->SetBackgroundColour(wxColour(box_color, box_color, box_color));
 
 	wxString display_value;
-	display_value << value;
+	display_value << val;
 	wxStaticText* text = new wxStaticText(boxs[pos], wxID_ANY, display_value);
 	text->Center();
 
@@ -59,7 +60,7 @@ void rClear(short id, wxPanel** boxs, wxPanel* base) {
 	case id_static_array:
 		for (int i = 1; i <= BstaticArray::a_size; ++i) {
 			BstaticArray::a[i] = 0;
-			drawBox(boxs, base, i, -1000);
+			drawBox(boxs, base, i);
 		}
 		BstaticArray::a_size = 0;
 		break;
@@ -119,13 +120,13 @@ void rStringToBox(short id, std::string& line, wxPanel** boxs, wxPanel* base) {
 	}
 }
 
-void rInsert(short id, short pos, int value, wxPanel** boxs, wxPanel* base) {
+void rInsert(short id, short pos, short val, wxPanel** boxs, wxPanel* base) {
 	switch (id) {
 	case id_static_array:
 		++pos;
-		BstaticArray::insertPosition(pos, value);
+		BstaticArray::insertPosition(pos, val);
 		for (short i = 1; i <= BstaticArray::a_size; ++i) {
-			drawBox(boxs, base, i, -1000);
+			drawBox(boxs, base, i);
 			drawBox(boxs, base, i, BstaticArray::a[i]);
 		}
 	}
@@ -137,27 +138,27 @@ void rDelete(short id, short pos, wxPanel** boxs, wxPanel* base) {
 		++pos;
 		BstaticArray::deletePosition(pos);
 		for (short i = 1; i <= BstaticArray::a_size; ++i) {
-			drawBox(boxs, base, i, -1000);
+			drawBox(boxs, base, i);
 			drawBox(boxs, base, i, BstaticArray::a[i]);
 		}
 	}
 }
 
-void rUpdate(short id, short pos, int value, wxPanel** boxs, wxPanel* base) {
+void rUpdate(short id, short pos, short val, wxPanel** boxs, wxPanel* base) {
 	switch (id) {
 	case id_static_array:
 		++pos;
-		BstaticArray::a[pos] = value;
-		drawBox(boxs, base, pos, -1000);
+		BstaticArray::a[pos] = val;
+		drawBox(boxs, base, pos);
 		drawBox(boxs, base, pos, BstaticArray::a[pos]);
 	}
 }
 
-short rSearch(short id, int value) {
+short rSearch(short id, short val) {
 	switch (id) {
 	case id_static_array:
 		for (short i = 1; i <= BstaticArray::a_size; ++i) {
-			if (BstaticArray::a[i] == value) {
+			if (BstaticArray::a[i] == val) {
 				return i - 1;
 			}
 		}
@@ -173,19 +174,21 @@ bool rNext(short id, wxPanel** boxs, wxPanel* base, wxStaticBitmap* arrow) {
 			return true;
 		}
 		drawArrow(arrow, BstaticArray::current);
-		for (short i = BstaticArray::current; i <= BstaticArray::b_size; ++i) {
-			drawBox(boxs, base, i, -1000);
-			drawBox(boxs, base, i, BstaticArray::b[i]);
+		drawBox(boxs, base, BstaticArray::current);
+		drawBox(boxs, base, BstaticArray::current, BstaticArray::b[BstaticArray::current]);
+		if (BstaticArray::current + 1 <= BstaticArray::b_size) {
+			drawBox(boxs, base, BstaticArray::current + 1);
+			drawBox(boxs, base, BstaticArray::current + 1, BstaticArray::b[BstaticArray::current + 1]);
 		}
 		break;
 	}
 }
 
-void rInsertSbs(short id, short pos, int value, wxStaticBitmap* arrow) {
+void rInsertSbs(short id, short pos, short val, wxStaticBitmap* arrow) {
 	switch (id) {
 	case id_static_array:
 		++pos;
-		BstaticArray::setup(pos, value, 1);
+		BstaticArray::setup(pos, val, 1);
 		drawArrow(arrow, BstaticArray::current);
 	}
 }

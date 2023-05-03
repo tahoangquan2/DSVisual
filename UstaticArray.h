@@ -1,6 +1,4 @@
-#pragma once
-#include <wx/wx.h>
-#include <wx/spinctrl.h>
+#include "constant.h"
 
 class UstaticArray : public wxPanel {
 
@@ -25,7 +23,7 @@ public:
 	wxStaticBitmap* arrow = nullptr;
 	bool during_sbs = false;
 	short fix_pos = 0;
-	int fix_val = 0;
+	short fix_val = 0;
 
 	UstaticArray(wxPanel* parent);
 

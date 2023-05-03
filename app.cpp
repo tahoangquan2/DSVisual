@@ -1,6 +1,4 @@
 #include "app.h"
-#include "constant.h"
-#include "Umain.h"
 
 wxIMPLEMENT_APP(app);
 

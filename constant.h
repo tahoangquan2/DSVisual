@@ -1,5 +1,8 @@
 #pragma once
 #include <wx/wx.h>
+#include <wx/spinctrl.h>
+#include <time.h>
+#include <fstream>
 
 const short id_static_array = 1;
 

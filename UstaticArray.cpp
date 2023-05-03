@@ -1,9 +1,5 @@
-#include "constant.h"
-#include "receiver.h"
 #include "UstaticArray.h"
-#include <wx/wx.h>
-#include <wx/spinctrl.h>
-#include <fstream>
+#include "receiver.h"
 
 UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	base->SetSize(size1, size2);
@@ -17,6 +13,7 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	wxButton* button_update = new wxButton(base, wxID_ANY, "Update", wxPoint(590, 570), wxSize(110, 45));
 	wxButton* button_access = new wxButton(base, wxID_ANY, "Access", wxPoint(720, 570), wxSize(110, 45));
 	wxButton* button_search = new wxButton(base, wxID_ANY, "Search", wxPoint(850, 570), wxSize(110, 45));
+
 	button_sbs = new wxButton(base, wxID_ANY, "Step by Step", wxPoint(330, 10), wxSize(110, 45));
 	button_sbs2 = new wxButton(base, wxID_ANY, "Back to Normal", wxPoint(330, 10), wxSize(110, 45));
 	button_sbs2->Hide();
@@ -57,6 +54,7 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	button_update->Bind(wxEVT_BUTTON, &UstaticArray::updatePosition, this);
 	button_access->Bind(wxEVT_BUTTON, &UstaticArray::accessPosition, this);
 	button_search->Bind(wxEVT_BUTTON, &UstaticArray::searchValue, this);
+
 	button_sbs->Bind(wxEVT_BUTTON, &UstaticArray::sbsModeOn, this);
 	button_sbs2->Bind(wxEVT_BUTTON, &UstaticArray::sbsModeOff, this);
 	button_next->Bind(wxEVT_BUTTON, &UstaticArray::nextStep, this);
@@ -77,20 +75,25 @@ void UstaticArray::createRandom(wxCommandEvent& e) {
 	if (during_sbs == true) {
 		return;
 	}
-	rClear(id_static_array, box, base);
-	rCreateRandom(id_static_array, box, base);
-	input_insert_pos->SetRange(0, rBoxSize(id_static_array) - 1);
-	input_delete_pos->SetRange(0, rBoxSize(id_static_array) - 1);
-	input_update_pos->SetRange(0, rBoxSize(id_static_array) - 1);
-	input_access_pos->SetRange(0, rBoxSize(id_static_array) - 1);
+
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
 		output_access_val = nullptr;
 	}
+
 	if (output_search_pos != nullptr) {
 		output_search_pos->Destroy();
 		output_search_pos = nullptr;
 	}
+
+	rClear(id_static_array, box, base);
+	rCreateRandom(id_static_array, box, base);
+
+	input_insert_pos->SetRange(0, rBoxSize(id_static_array) - 1);
+	input_delete_pos->SetRange(0, rBoxSize(id_static_array) - 1);
+	input_update_pos->SetRange(0, rBoxSize(id_static_array) - 1);
+	input_access_pos->SetRange(0, rBoxSize(id_static_array) - 1);
+
 	input_insert_pos->SetValue(0);
 	input_insert_val->SetValue(0);
 	input_delete_pos->SetValue(0);
@@ -137,6 +140,7 @@ void UstaticArray::exportFile(wxCommandEvent& e) {
 	if (during_sbs == true) {
 		return;
 	}
+
 	if (rBoxSize(id_static_array) == 0) {
 		showError("There is no element");
 		return;
@@ -172,24 +176,28 @@ void UstaticArray::insertPosition(wxCommandEvent& e) {
 	if (during_sbs == true) {
 		return;
 	}
-	short pos = input_insert_pos->GetValue();
-	int value = input_insert_val->GetValue();
+
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
 		output_access_val = nullptr;
 	}
+
 	if (output_search_pos != nullptr) {
 		output_search_pos->Destroy();
 		output_search_pos = nullptr;
 	}
+
+	short pos = input_insert_pos->GetValue();
+	short val = input_insert_val->GetValue();
+
 	if (sbs_mode == false) {
-		rInsert(id_static_array, pos, value, box, base);
+		rInsert(id_static_array, pos, val, box, base);
 	}
 	else {
 		fix_pos = pos;
-		fix_val = value;
+		fix_val = val;
 		during_sbs = true;
-		rInsertSbs(id_static_array, pos, value, arrow);
+		rInsertSbs(id_static_array, pos, val, arrow);
 	}
 }
 
@@ -197,15 +205,17 @@ void UstaticArray::deletePosition(wxCommandEvent& e) {
 	if (during_sbs == true) {
 		return;
 	}
-	short pos = input_delete_pos->GetValue();
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
 		output_access_val = nullptr;
 	}
+
 	if (output_search_pos != nullptr) {
 		output_search_pos->Destroy();
 		output_search_pos = nullptr;
 	}
+
+	short pos = input_delete_pos->GetValue();
 	rDelete(id_static_array, pos, box, base);
 }
 
@@ -213,32 +223,37 @@ void UstaticArray::updatePosition(wxCommandEvent& e) {
 	if (during_sbs == true) {
 		return;
 	}
-	short pos = input_update_pos->GetValue();
-	int value = input_update_val->GetValue();
+
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
 		output_access_val = nullptr;
 	}
+
 	if (output_search_pos != nullptr) {
 		output_search_pos->Destroy();
 		output_search_pos = nullptr;
 	}
-	rUpdate(id_static_array, pos, value, box, base);
+
+	short pos = input_update_pos->GetValue();
+	short val = input_update_val->GetValue();
+	rUpdate(id_static_array, pos, val, box, base);
 }
 
 void UstaticArray::accessPosition(wxCommandEvent& e) {
 	if (during_sbs == true) {
 		return;
 	}
-	short pos = input_access_pos->GetValue();
-	int value = rAtBox(id_static_array, pos + 1);
-	wxString text = "";
-	text << value;
 
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
 		output_access_val = nullptr;
 	}
+
+	short pos = input_access_pos->GetValue();
+	short val = rAtBox(id_static_array, pos + 1);
+	wxString text = "";
+	text << val;
+
 	output_access_val = new wxStaticText(base, wxID_ANY, text, wxPoint(775, 475));
 	output_access_val->Show();
 }
@@ -247,8 +262,14 @@ void UstaticArray::searchValue(wxCommandEvent& e) {
 	if (during_sbs == true) {
 		return;
 	}
-	int value = input_search_val->GetValue();
-	short pos = rSearch(id_static_array, value);
+
+	if (output_search_pos != nullptr) {
+		output_search_pos->Destroy();
+		output_search_pos = nullptr;
+	}
+
+	short val = input_search_val->GetValue();
+	short pos = rSearch(id_static_array, val);
 	wxString text = "";
 
 	if (pos == -1) {
@@ -258,10 +279,6 @@ void UstaticArray::searchValue(wxCommandEvent& e) {
 		text << pos;
 	}
 
-	if (output_search_pos != nullptr) {
-		output_search_pos->Destroy();
-		output_search_pos = nullptr;
-	}
 	output_search_pos = new wxStaticText(base, wxID_ANY, text, wxPoint(905, 475));
 	output_search_pos->Show();
 }
@@ -283,6 +300,7 @@ void UstaticArray::sbsModeOff(wxCommandEvent& e) {
 	button_next->Hide();
 	button_skip->Hide();
 	arrow->Hide();
+
 	wxCommandEvent empty_e = wxCommandEvent();
 	skipStep(empty_e);
 }
@@ -291,9 +309,11 @@ void UstaticArray::nextStep(wxCommandEvent& e) {
 	if (during_sbs == false) {
 		return;
 	}
+
 	if (rNext(id_static_array, box, base, arrow)) {
 		during_sbs = false;
 		wxCommandEvent empty_e = wxCommandEvent();
+
 		switch (rSbsMode(id_static_array)) {
 		case 1:
 			rInsert(id_static_array, fix_pos, fix_val, box, base);
@@ -306,8 +326,10 @@ void UstaticArray::skipStep(wxCommandEvent& e) {
 	if (during_sbs == false) {
 		return;
 	}
+
 	during_sbs = false;
 	wxCommandEvent empty_e = wxCommandEvent();
+
 	switch (rSbsMode(id_static_array)) {
 	case 1:
 		rInsert(id_static_array, fix_pos, fix_val, box, base);

@@ -1,27 +1,24 @@
-#pragma once
 #include "constant.h"
-#include <wx/wx.h>
 
 namespace BstaticArray {
-	short a_size = 0, b_size = 0, current, position, mode;
-	int a[15], b[15], val;
+	short a_size = 0, b_size = 0, current, a[15], b[15], value, position, mode;
 	bool move;
 
-	bool addBox(int value = 0) {
+	bool addBox(short val = 0) {
 		if (a_size == max_size) {
 			wxMessageBox(wxT("The maximum number of element you can have is 12"), wxT("Error"), wxICON_ERROR);
 			return false;
 		}
 		++a_size;
-		a[a_size] = value;
+		a[a_size] = val;
 		return true;
 	}
 
-	bool insertPosition(short pos, int value) {
+	bool insertPosition(short pos, short val) {
 		for (short i = a_size; i >= pos; --i) {
 			a[i + 1] = a[i];
 		}
-		a[pos] = value;
+		a[pos] = val;
 		return true;
 	}
 
@@ -33,9 +30,9 @@ namespace BstaticArray {
 		return true;
 	}
 
-	bool setup(short p, int v, short signal) {
-		position = p;
-		val = v;
+	bool setup(short pos, int val, short signal) {
+		position = pos;
+		value = val;
 		mode = signal;
 		move = false;
 		b_size = a_size;
@@ -43,8 +40,10 @@ namespace BstaticArray {
 			b[i] = a[i];
 		}
 		b[b_size + 1] = 0;
-		if (mode == 1) {
+		switch (mode) {
+		case 1:
 			current = b_size;
+			break;
 		}
 		return true;
 	}
@@ -70,7 +69,7 @@ namespace BstaticArray {
 					b[current] = 0;
 				}
 				else {
-					b[current] = val;
+					b[current] = value;
 					return true;
 				}
 			}

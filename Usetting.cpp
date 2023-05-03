@@ -1,7 +1,5 @@
-#include "receiver.h"
-#include "Umain.h"
 #include "Usetting.h"
-#include <wx/wx.h>
+#include "receiver.h"
 
 Usetting::Usetting(wxPanel* parent) : wxPanel(parent) {
 	base->SetSize(size1, size2);

@@ -1,9 +1,7 @@
-#include "receiver.h"
 #include "Umain.h"
 #include "Umenu.h"
 #include "Usetting.h"
 #include "UstaticArray.h"
-#include <wx/wx.h>
 
 Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 	wxIcon icon("assets/icon.jpg", wxBITMAP_TYPE_JPEG);

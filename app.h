@@ -1,5 +1,5 @@
-#pragma once
-#include <wx/wx.h>
+#include "constant.h"
+#include "Umain.h"
 
 class app : public wxApp {
 public:

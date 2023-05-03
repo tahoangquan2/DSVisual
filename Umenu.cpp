@@ -1,7 +1,6 @@
+#include "Umenu.h"
 #include "receiver.h"
 #include "Umain.h"
-#include "Umenu.h"
-#include <wx/wx.h>
 
 Umenu::Umenu(wxPanel* parent) : wxPanel(parent) {
 	base->SetSize(size1, size2);

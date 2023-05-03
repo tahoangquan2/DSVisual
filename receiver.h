@@ -14,6 +14,10 @@ void rUpdate(short id, short pos, short val, wxPanel** boxs, wxPanel* base);
 short rSearch(short id, short val);
 bool rNext(short id, wxPanel** boxs, wxPanel* base, wxStaticBitmap* arrow);
 void rInsertSbs(short id, short pos, short val, wxStaticBitmap* arrow);
+void rDeleteSbs(short id, short pos, wxStaticBitmap* arrow);
+void rUpdateSbs(short id, short pos, short val, wxStaticBitmap* arrow);
+void rAccessSbs(short id, short pos, wxStaticBitmap* arrow);
+void rSearchSbs(short id, short val, wxStaticBitmap* arrow);
 
 int rBoxSize(short id);
 int rAtBox(short id, short pos);

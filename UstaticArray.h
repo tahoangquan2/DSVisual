@@ -40,4 +40,5 @@ public:
 	void sbsModeOff(wxCommandEvent& e);
 	void nextStep(wxCommandEvent& e);
 	void skipStep(wxCommandEvent& e);
+
 };

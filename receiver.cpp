@@ -168,18 +168,24 @@ short rSearch(short id, short val) {
 }
 
 bool rNext(short id, wxPanel** boxs, wxPanel* base, wxStaticBitmap* arrow) {
+	bool signal;
 	switch (id) {
 	case id_static_array:
-		if (BstaticArray::next() == true) {
-			return true;
-		}
+		signal = BstaticArray::next();
+
 		drawArrow(arrow, BstaticArray::current);
 		drawBox(boxs, base, BstaticArray::current);
 		drawBox(boxs, base, BstaticArray::current, BstaticArray::b[BstaticArray::current]);
+
 		if (BstaticArray::current + 1 <= BstaticArray::b_size) {
 			drawBox(boxs, base, BstaticArray::current + 1);
 			drawBox(boxs, base, BstaticArray::current + 1, BstaticArray::b[BstaticArray::current + 1]);
 		}
+
+		if (signal == true) {
+			return true;
+		}
+
 		break;
 	}
 }
@@ -193,12 +199,48 @@ void rInsertSbs(short id, short pos, short val, wxStaticBitmap* arrow) {
 	}
 }
 
+void rDeleteSbs(short id, short pos, wxStaticBitmap* arrow) {
+	switch (id) {
+	case id_static_array:
+		++pos;
+		BstaticArray::setup(pos, 0, 2);
+		drawArrow(arrow, BstaticArray::current);
+	}
+}
+
+void rUpdateSbs(short id, short pos, short val, wxStaticBitmap* arrow) {
+	switch (id) {
+	case id_static_array:
+		++pos;
+		BstaticArray::setup(pos, val, 3);
+		drawArrow(arrow, BstaticArray::current);
+	}
+}
+
+void rAccessSbs(short id, short pos, wxStaticBitmap* arrow) {
+	switch (id) {
+	case id_static_array:
+		++pos;
+		BstaticArray::setup(pos, 0, 4);
+		drawArrow(arrow, BstaticArray::current);
+	}
+}
+
+void rSearchSbs(short id, short val, wxStaticBitmap* arrow) {
+	switch (id) {
+	case id_static_array:
+		BstaticArray::setup(0, val, 5);
+		drawArrow(arrow, BstaticArray::current);
+	}
+}
+
 int rBoxSize(short id) {
 	switch (id) {
 	case id_static_array:
 		return BstaticArray::a_size;
 		break;
 	}
+
 	return 0;
 }
 
@@ -208,9 +250,11 @@ int rAtBox(short id, short pos) {
 		if (pos > BstaticArray::a_size) {
 			return -1000;
 		}
+
 		return BstaticArray::a[pos];
 		break;
 	}
+
 	return -1000;
 }
 
@@ -220,5 +264,6 @@ short rSbsMode(short id) {
 		return BstaticArray::mode;
 		break;
 	}
+
 	return 0;
 }

@@ -15,19 +15,6 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	wxButton* button_access = new wxButton(base, wxID_ANY, "Access", wxPoint(720, 570), wxSize(110, 45));
 	wxButton* button_search = new wxButton(base, wxID_ANY, "Search", wxPoint(850, 570), wxSize(110, 45));
 
-	// for step by step mode
-	button_sbs = new wxButton(base, wxID_ANY, "Step by Step", wxPoint(330, 10), wxSize(110, 45));
-	button_sbs2 = new wxButton(base, wxID_ANY, "Back to Normal", wxPoint(330, 10), wxSize(110, 45));
-	button_sbs2->Hide();
-	button_next = new wxButton(base, wxID_ANY, "Next", wxPoint(460, 10), wxSize(110, 45));
-	button_next->Hide();
-	button_skip = new wxButton(base, wxID_ANY, "Skip", wxPoint(590, 10), wxSize(110, 45));
-	button_skip->Hide();
-	wxBitmap arrow_image(wxT("assets/arrow.png"), wxBITMAP_TYPE_PNG);
-	arrow_image.Rescale(arrow_image, FromDIP(wxSize(30, 29)));
-	arrow = new wxStaticBitmap(base, wxID_ANY, arrow_image, wxPoint(box_position[1] + 10, box_y - 50));
-	arrow->Hide();
-
 	wxStaticText* text_insert_pos = new wxStaticText(base, wxID_ANY, "Position:", wxPoint(330, 512));
 	wxStaticText* text_insert_val = new wxStaticText(base, wxID_ANY, "Value:", wxPoint(330, 452));
 	wxStaticText* text_delete_pos = new wxStaticText(base, wxID_ANY, "Position:", wxPoint(460, 512));
@@ -56,11 +43,6 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	button_access->Bind(wxEVT_BUTTON, &UstaticArray::accessPosition, this);
 	button_search->Bind(wxEVT_BUTTON, &UstaticArray::searchValue, this);
 
-	button_sbs->Bind(wxEVT_BUTTON, &UstaticArray::sbsModeOn, this);
-	button_sbs2->Bind(wxEVT_BUTTON, &UstaticArray::sbsModeOff, this);
-	button_next->Bind(wxEVT_BUTTON, &UstaticArray::nextStep, this);
-	button_skip->Bind(wxEVT_BUTTON, &UstaticArray::skipStep, this);
-
 	wxCommandEvent empty_e = wxCommandEvent();
 	createRandom(empty_e);
 }
@@ -69,16 +51,11 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 void UstaticArray::goBack(wxCommandEvent& e) {
 	rGoToPanel(this, parent);
 	wxCommandEvent empty_e = wxCommandEvent();
-	sbsModeOff(empty_e);
 	createRandom(empty_e);
 }
 
 // create random input
 void UstaticArray::createRandom(wxCommandEvent& e) {
-	if (during_sbs == true) {
-		return;
-	}
-
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
 		output_access_val = nullptr;
@@ -143,10 +120,6 @@ void UstaticArray::importFile(wxCommandEvent& e) {
 
 // export the input to a txt file
 void UstaticArray::exportFile(wxCommandEvent& e) {
-	if (during_sbs == true) {
-		return;
-	}
-
 	if (rBoxSize(id_static_array) == 0) {
 		showError("There is no element");
 		return;
@@ -180,10 +153,6 @@ void UstaticArray::exportFile(wxCommandEvent& e) {
 
 // insert a value to a specific position
 void UstaticArray::insertPosition(wxCommandEvent& e) {
-	if (during_sbs == true) {
-		return;
-	}
-
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
 		output_access_val = nullptr;
@@ -197,22 +166,11 @@ void UstaticArray::insertPosition(wxCommandEvent& e) {
 	short pos = input_insert_pos->GetValue();
 	short val = input_insert_val->GetValue();
 
-	if (sbs_mode == false) {
-		rInsert(id_static_array, pos, val, box, base);
-	}
-	else {
-		during_sbs = true;
-		fix_pos = pos;
-		fix_val = val;
-		rInsertSbs(id_static_array, pos, val, arrow);
-	}
+	rInsert(id_static_array, pos, val, box, base);
 }
 
 // delete a value of a specific position
 void UstaticArray::deletePosition(wxCommandEvent& e) {
-	if (during_sbs == true) {
-		return;
-	}
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
 		output_access_val = nullptr;
@@ -225,22 +183,11 @@ void UstaticArray::deletePosition(wxCommandEvent& e) {
 
 	short pos = input_delete_pos->GetValue();
 
-	if (sbs_mode == false) {
-		rDelete(id_static_array, pos, box, base);
-	}
-	else {
-		during_sbs = true;
-		fix_pos = pos;
-		rDeleteSbs(id_static_array, pos, arrow);
-	}
+	rDelete(id_static_array, pos, box, base);
 }
 
 // update a value of a specific position
 void UstaticArray::updatePosition(wxCommandEvent& e) {
-	if (during_sbs == true) {
-		return;
-	}
-
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
 		output_access_val = nullptr;
@@ -254,23 +201,11 @@ void UstaticArray::updatePosition(wxCommandEvent& e) {
 	short pos = input_update_pos->GetValue();
 	short val = input_update_val->GetValue();
 
-	if (sbs_mode == false) {
-		rUpdate(id_static_array, pos, val, box, base);
-	}
-	else {
-		during_sbs = true;
-		fix_pos = pos;
-		fix_val = val;
-		rUpdateSbs(id_static_array, pos, val, arrow);
-	}
+	rUpdate(id_static_array, pos, val, box, base);
 }
 
 // return the value at a specific position
 void UstaticArray::accessPosition(wxCommandEvent& e) {
-	if (during_sbs == true) {
-		return;
-	}
-
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
 		output_access_val = nullptr;
@@ -278,25 +213,14 @@ void UstaticArray::accessPosition(wxCommandEvent& e) {
 
 	short pos = input_access_pos->GetValue();
 
-	if (sbs_mode == false) {
-		wxString text = "";
-		text << rAtBox(id_static_array, pos + 1);
-		output_access_val = new wxStaticText(base, wxID_ANY, text, wxPoint(775, 475));
-		output_access_val->Show();
-	}
-	else {
-		during_sbs = true;
-		fix_pos = pos;
-		rAccessSbs(id_static_array, pos, arrow);
-	}
+	wxString text = "";
+	text << rAtBox(id_static_array, pos + 1);
+	output_access_val = new wxStaticText(base, wxID_ANY, text, wxPoint(775, 475));
+	output_access_val->Show();
 }
 
 // search the position of first appearence of a specific value
 void UstaticArray::searchValue(wxCommandEvent& e) {
-	if (during_sbs == true) {
-		return;
-	}
-
 	if (output_search_pos != nullptr) {
 		output_search_pos->Destroy();
 		output_search_pos = nullptr;
@@ -304,105 +228,16 @@ void UstaticArray::searchValue(wxCommandEvent& e) {
 
 	short val = input_search_val->GetValue();
 
-	if (sbs_mode == false) {
-		short pos = rSearch(id_static_array, val);
-		wxString text = "";
+	short pos = rSearch(id_static_array, val);
+	wxString text = "";
 
-		if (pos == -1) {
-			text = "None";
-		}
-		else {
-			text << pos;
-		}
-
-		output_search_pos = new wxStaticText(base, wxID_ANY, text, wxPoint(905, 475));
-		output_search_pos->Show();
+	if (pos == -1) {
+		text = "None";
 	}
 	else {
-		during_sbs = true;
-		fix_val = val;
-		rSearchSbs(id_static_array, val, arrow);
-	}
-}
-
-// turn on the step by step mode
-void UstaticArray::sbsModeOn(wxCommandEvent& e) {
-	sbs_mode = true;
-	button_sbs->Hide();
-	button_sbs2->Show();
-	button_next->Show();
-	button_skip->Show();
-	arrow->SetPosition(wxPoint(box_position[1] + 10, box_y - 50));
-	arrow->Show();
-}
-
-// turn off the step by step mode
-void UstaticArray::sbsModeOff(wxCommandEvent& e) {
-	wxCommandEvent empty_e = wxCommandEvent();
-	skipStep(empty_e);
-
-	sbs_mode = false;
-	button_sbs2->Hide();
-	button_sbs->Show();
-	button_next->Hide();
-	button_skip->Hide();
-	arrow->Hide();
-}
-
-// go to the next step in the step by step mode
-void UstaticArray::nextStep(wxCommandEvent& e) {
-	if (during_sbs == false) {
-		return;
+		text << pos;
 	}
 
-	if (rNext(id_static_array, box, base, arrow) == true) {
-		wxCommandEvent empty_e = wxCommandEvent();
-		skipStep(empty_e);
-		during_sbs = false;
-	}
-}
-
-// skipp all the steps in the step by step mode
-void UstaticArray::skipStep(wxCommandEvent& e) {
-	if (during_sbs == false) {
-		return;
-	}
-
-	wxString text = "";
-	short pos;
-	during_sbs = false;
-
-	switch (rSbsMode(id_static_array)) {
-	case 1:
-		rInsert(id_static_array, fix_pos, fix_val, box, base);
-		break;
-
-	case 2:
-		rDelete(id_static_array, fix_pos, box, base);
-		break;
-
-	case 3:
-		rUpdate(id_static_array, fix_pos, fix_val, box, base);
-		break;
-
-	case 4:
-		text << rAtBox(id_static_array, fix_pos + 1);
-		output_access_val = new wxStaticText(base, wxID_ANY, text, wxPoint(775, 475));
-		output_access_val->Show();
-		break;
-
-	case 5:
-		pos = rSearch(id_static_array, fix_val);
-
-		if (pos == -1) {
-			text = "None";
-		}
-		else {
-			text << pos;
-		}
-
-		output_search_pos = new wxStaticText(base, wxID_ANY, text, wxPoint(905, 475));
-		output_search_pos->Show();
-		break;
-	}
+	output_search_pos = new wxStaticText(base, wxID_ANY, text, wxPoint(905, 475));
+	output_search_pos->Show();
 }

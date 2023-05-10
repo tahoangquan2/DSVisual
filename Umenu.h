@@ -7,9 +7,11 @@ public:
 	wxPanel* base = new wxPanel(this);
 	wxPanel* parent_setting = nullptr;
 	wxPanel* parent_static_array = nullptr;
+	wxPanel* parent_dynamic_array = nullptr;
 
 	Umenu(wxPanel* parent);
 	void toSetting(wxCommandEvent& e);
 	void toStaticArray(wxCommandEvent& e);
+	void toDynamicArray(wxCommandEvent& e);
 
 };

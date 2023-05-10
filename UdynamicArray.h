@@ -1,7 +1,7 @@
 #include "constant.h"
 
-// UI for the static array
-class UstaticArray : public wxPanel {
+// UI for the dynamic array
+class UdynamicArray : public wxPanel {
 
 public:
 	wxPanel* base = new wxPanel(this);
@@ -16,8 +16,17 @@ public:
 	wxStaticText* output_access_val = nullptr;
 	wxSpinCtrl* input_search_val = nullptr;
 	wxStaticText* output_search_pos = nullptr;
+	wxButton* button_sbs = nullptr;
+	wxButton* button_sbs2 = nullptr;
+	bool sbs_mode = false;
+	wxButton* button_next = nullptr;
+	wxButton* button_skip = nullptr;
+	wxStaticBitmap* arrow = nullptr;
+	bool during_sbs = false;
+	short fix_pos = 0;
+	short fix_val = 0;
 
-	UstaticArray(wxPanel* parent);
+	UdynamicArray(wxPanel* parent);
 
 	void goBack(wxCommandEvent& e);
 	void createRandom(wxCommandEvent& e);
@@ -28,5 +37,9 @@ public:
 	void updatePosition(wxCommandEvent& e);
 	void accessPosition(wxCommandEvent& e);
 	void searchValue(wxCommandEvent& e);
+	void sbsModeOn(wxCommandEvent& e);
+	void sbsModeOff(wxCommandEvent& e);
+	void nextStep(wxCommandEvent& e);
+	void skipStep(wxCommandEvent& e);
 
 };

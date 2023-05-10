@@ -1,8 +1,10 @@
 #include "receiver.h"
 
 #include "UstaticArray.h"
+#include "UdynamicArray.h"
 
 #include "BstaticArray.h"
+#include "BdynamicArray.h"
 
 // the value of the position
 wxStaticText* id_pos[13];
@@ -65,11 +67,19 @@ void rGoToPanel(wxPanel* current_panel, wxPanel* goto_panel) {
 void rClear(short id, wxPanel** boxs, wxPanel* base) {
 	switch (id) {
 	case id_static_array:
-		for (int i = 1; i <= BstaticArray::a_size; ++i) {
+		for (short i = 1; i <= BstaticArray::a_size; ++i) {
 			BstaticArray::a[i] = 0;
 			drawBox(boxs, base, i);
 		}
 		BstaticArray::a_size = 0;
+		break;
+
+	case id_dynamic_array:
+		for (short i = 1; i <= BdynamicArray::a_size; ++i) {
+			BdynamicArray::a[i] = 0;
+			drawBox(boxs, base, i);
+		}
+		BdynamicArray::a_size = 0;
 		break;
 	}
 }
@@ -77,13 +87,20 @@ void rClear(short id, wxPanel** boxs, wxPanel* base) {
 // create random input in the backend
 void rCreateRandom(short id, wxPanel** boxs, wxPanel* base) {
 	srand(time(NULL));
+	short random_size = getRandom(3, 12);
 
 	switch (id) {
 	case id_static_array:
-		short random_size = getRandom(3, 12);
 		for (short i = 1; i <= random_size; ++i) {
 			BstaticArray::addBox(getRandom(1, 69));
 			drawBox(boxs, base, i, BstaticArray::a[i]);
+		}
+		break;
+
+	case id_dynamic_array:
+		for (short i = 1; i <= random_size; ++i) {
+			BdynamicArray::addBox(getRandom(1, 69));
+			drawBox(boxs, base, i, BdynamicArray::a[i]);
 		}
 		break;
 	}
@@ -126,6 +143,13 @@ void rStringToBox(short id, std::string& line, wxPanel** boxs, wxPanel* base) {
 			drawBox(boxs, base, i, BstaticArray::a[i]);
 		}
 		break;
+
+	case id_dynamic_array:
+		for (short i = 1; i <= sz; ++i) {
+			BdynamicArray::addBox(value[i]);
+			drawBox(boxs, base, i, BdynamicArray::a[i]);
+		}
+		break;
 	}
 }
 
@@ -139,6 +163,16 @@ void rInsert(short id, short pos, short val, wxPanel** boxs, wxPanel* base) {
 			drawBox(boxs, base, i);
 			drawBox(boxs, base, i, BstaticArray::a[i]);
 		}
+		break;
+
+	case id_dynamic_array:
+		++pos;
+		BdynamicArray::insertPosition(pos, val);
+		for (short i = 1; i <= BdynamicArray::a_size; ++i) {
+			drawBox(boxs, base, i);
+			drawBox(boxs, base, i, BdynamicArray::a[i]);
+		}
+		break;
 	}
 }
 
@@ -152,6 +186,16 @@ void rDelete(short id, short pos, wxPanel** boxs, wxPanel* base) {
 			drawBox(boxs, base, i);
 			drawBox(boxs, base, i, BstaticArray::a[i]);
 		}
+		break;
+
+	case id_dynamic_array:
+		++pos;
+		BdynamicArray::deletePosition(pos);
+		for (short i = 1; i <= BdynamicArray::a_size; ++i) {
+			drawBox(boxs, base, i);
+			drawBox(boxs, base, i, BdynamicArray::a[i]);
+		}
+		break;
 	}
 }
 
@@ -163,6 +207,14 @@ void rUpdate(short id, short pos, short val, wxPanel** boxs, wxPanel* base) {
 		BstaticArray::a[pos] = val;
 		drawBox(boxs, base, pos);
 		drawBox(boxs, base, pos, BstaticArray::a[pos]);
+		break;
+
+	case id_dynamic_array:
+		++pos;
+		BdynamicArray::a[pos] = val;
+		drawBox(boxs, base, pos);
+		drawBox(boxs, base, pos, BdynamicArray::a[pos]);
+		break;
 	}
 }
 
@@ -176,7 +228,16 @@ short rSearch(short id, short val) {
 			}
 		}
 		break;
+
+	case id_dynamic_array:
+		for (short i = 1; i <= BdynamicArray::a_size; ++i) {
+			if (BdynamicArray::a[i] == val) {
+				return i - 1;
+			}
+		}
+		break;
 	}
+
 	return -1;
 }
 
@@ -201,6 +262,24 @@ bool rNext(short id, wxPanel** boxs, wxPanel* base, wxStaticBitmap* arrow) {
 		}
 
 		break;
+
+	case id_dynamic_array:
+		signal = BdynamicArray::next();
+
+		drawArrow(arrow, BdynamicArray::current);
+		drawBox(boxs, base, BdynamicArray::current);
+		drawBox(boxs, base, BdynamicArray::current, BdynamicArray::b[BdynamicArray::current]);
+
+		if (BdynamicArray::current + 1 <= BdynamicArray::b_size) {
+			drawBox(boxs, base, BdynamicArray::current + 1);
+			drawBox(boxs, base, BdynamicArray::current + 1, BdynamicArray::b[BdynamicArray::current + 1]);
+		}
+
+		if (signal == true) {
+			return true;
+		}
+
+		break;
 	}
 }
 
@@ -211,6 +290,13 @@ void rInsertSbs(short id, short pos, short val, wxStaticBitmap* arrow) {
 		++pos;
 		BstaticArray::setup(pos, val, 1);
 		drawArrow(arrow, BstaticArray::current);
+		break;
+
+	case id_dynamic_array:
+		++pos;
+		BdynamicArray::setup(pos, val, 1);
+		drawArrow(arrow, BdynamicArray::current);
+		break;
 	}
 }
 
@@ -221,6 +307,13 @@ void rDeleteSbs(short id, short pos, wxStaticBitmap* arrow) {
 		++pos;
 		BstaticArray::setup(pos, 0, 2);
 		drawArrow(arrow, BstaticArray::current);
+		break;
+
+	case id_dynamic_array:
+		++pos;
+		BdynamicArray::setup(pos, 0, 2);
+		drawArrow(arrow, BdynamicArray::current);
+		break;
 	}
 }
 
@@ -231,6 +324,13 @@ void rUpdateSbs(short id, short pos, short val, wxStaticBitmap* arrow) {
 		++pos;
 		BstaticArray::setup(pos, val, 3);
 		drawArrow(arrow, BstaticArray::current);
+		break;
+
+	case id_dynamic_array:
+		++pos;
+		BdynamicArray::setup(pos, val, 3);
+		drawArrow(arrow, BdynamicArray::current);
+		break;
 	}
 }
 
@@ -241,6 +341,13 @@ void rAccessSbs(short id, short pos, wxStaticBitmap* arrow) {
 		++pos;
 		BstaticArray::setup(pos, 0, 4);
 		drawArrow(arrow, BstaticArray::current);
+		break;
+
+	case id_dynamic_array:
+		++pos;
+		BdynamicArray::setup(pos, 0, 4);
+		drawArrow(arrow, BdynamicArray::current);
+		break;
 	}
 }
 
@@ -250,6 +357,12 @@ void rSearchSbs(short id, short val, wxStaticBitmap* arrow) {
 	case id_static_array:
 		BstaticArray::setup(0, val, 5);
 		drawArrow(arrow, BstaticArray::current);
+		break;
+
+	case id_dynamic_array:
+		BdynamicArray::setup(0, val, 5);
+		drawArrow(arrow, BdynamicArray::current);
+		break;
 	}
 }
 
@@ -258,6 +371,10 @@ int rBoxSize(short id) {
 	switch (id) {
 	case id_static_array:
 		return BstaticArray::a_size;
+		break;
+
+	case id_dynamic_array:
+		return BdynamicArray::a_size;
 		break;
 	}
 
@@ -274,6 +391,14 @@ int rAtBox(short id, short pos) {
 
 		return BstaticArray::a[pos];
 		break;
+
+	case id_dynamic_array:
+		if (pos > BdynamicArray::a_size) {
+			return -1000;
+		}
+
+		return BdynamicArray::a[pos];
+		break;
 	}
 
 	return -1000;
@@ -284,6 +409,10 @@ short rSbsMode(short id) {
 	switch (id) {
 	case id_static_array:
 		return BstaticArray::mode;
+		break;
+
+	case id_dynamic_array:
+		return BdynamicArray::mode;
 		break;
 	}
 

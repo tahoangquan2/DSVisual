@@ -1,6 +1,7 @@
 #include "UstaticArray.h"
 #include "receiver.h"
 
+// main page for UI static array
 UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	base->SetSize(size1, size2);
 
@@ -14,6 +15,7 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	wxButton* button_access = new wxButton(base, wxID_ANY, "Access", wxPoint(720, 570), wxSize(110, 45));
 	wxButton* button_search = new wxButton(base, wxID_ANY, "Search", wxPoint(850, 570), wxSize(110, 45));
 
+	// for step by step mode
 	button_sbs = new wxButton(base, wxID_ANY, "Step by Step", wxPoint(330, 10), wxSize(110, 45));
 	button_sbs2 = new wxButton(base, wxID_ANY, "Back to Normal", wxPoint(330, 10), wxSize(110, 45));
 	button_sbs2->Hide();
@@ -21,7 +23,6 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	button_next->Hide();
 	button_skip = new wxButton(base, wxID_ANY, "Skip", wxPoint(590, 10), wxSize(110, 45));
 	button_skip->Hide();
-
 	wxBitmap arrow_image(wxT("assets/arrow.png"), wxBITMAP_TYPE_PNG);
 	arrow_image.Rescale(arrow_image, FromDIP(wxSize(30, 29)));
 	arrow = new wxStaticBitmap(base, wxID_ANY, arrow_image, wxPoint(box_position[1] + 10, box_y - 50));
@@ -64,6 +65,7 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 	createRandom(empty_e);
 }
 
+// go back to menu
 void UstaticArray::goBack(wxCommandEvent& e) {
 	rGoToPanel(this, parent);
 	wxCommandEvent empty_e = wxCommandEvent();
@@ -71,6 +73,7 @@ void UstaticArray::goBack(wxCommandEvent& e) {
 	createRandom(empty_e);
 }
 
+// create random input
 void UstaticArray::createRandom(wxCommandEvent& e) {
 	if (during_sbs == true) {
 		return;
@@ -103,6 +106,7 @@ void UstaticArray::createRandom(wxCommandEvent& e) {
 	input_search_val->SetValue(0);
 }
 
+// import the outside file
 void UstaticArray::importFile(wxCommandEvent& e) {
 	wxFileDialog open_file_dialog(this, _("Open File"), "", "", "Text files (*.txt)|*.txt", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
@@ -114,6 +118,7 @@ void UstaticArray::importFile(wxCommandEvent& e) {
 		output_access_val->Destroy();
 		output_access_val = nullptr;
 	}
+
 	if (output_search_pos != nullptr) {
 		output_search_pos->Destroy();
 		output_search_pos = nullptr;
@@ -136,6 +141,7 @@ void UstaticArray::importFile(wxCommandEvent& e) {
 	}
 }
 
+// export the input to a txt file
 void UstaticArray::exportFile(wxCommandEvent& e) {
 	if (during_sbs == true) {
 		return;
@@ -172,6 +178,7 @@ void UstaticArray::exportFile(wxCommandEvent& e) {
 	export_file.close();
 }
 
+// insert a value to a specific position
 void UstaticArray::insertPosition(wxCommandEvent& e) {
 	if (during_sbs == true) {
 		return;
@@ -201,6 +208,7 @@ void UstaticArray::insertPosition(wxCommandEvent& e) {
 	}
 }
 
+// delete a value of a specific position
 void UstaticArray::deletePosition(wxCommandEvent& e) {
 	if (during_sbs == true) {
 		return;
@@ -227,6 +235,7 @@ void UstaticArray::deletePosition(wxCommandEvent& e) {
 	}
 }
 
+// update a value of a specific position
 void UstaticArray::updatePosition(wxCommandEvent& e) {
 	if (during_sbs == true) {
 		return;
@@ -256,6 +265,7 @@ void UstaticArray::updatePosition(wxCommandEvent& e) {
 	}
 }
 
+// return the value at a specific position
 void UstaticArray::accessPosition(wxCommandEvent& e) {
 	if (during_sbs == true) {
 		return;
@@ -281,6 +291,7 @@ void UstaticArray::accessPosition(wxCommandEvent& e) {
 	}
 }
 
+// search the position of first appearence of a specific value
 void UstaticArray::searchValue(wxCommandEvent& e) {
 	if (during_sbs == true) {
 		return;
@@ -314,6 +325,7 @@ void UstaticArray::searchValue(wxCommandEvent& e) {
 	}
 }
 
+// turn on the step by step mode
 void UstaticArray::sbsModeOn(wxCommandEvent& e) {
 	sbs_mode = true;
 	button_sbs->Hide();
@@ -324,6 +336,7 @@ void UstaticArray::sbsModeOn(wxCommandEvent& e) {
 	arrow->Show();
 }
 
+// turn off the step by step mode
 void UstaticArray::sbsModeOff(wxCommandEvent& e) {
 	wxCommandEvent empty_e = wxCommandEvent();
 	skipStep(empty_e);
@@ -336,6 +349,7 @@ void UstaticArray::sbsModeOff(wxCommandEvent& e) {
 	arrow->Hide();
 }
 
+// go to the next step in the step by step mode
 void UstaticArray::nextStep(wxCommandEvent& e) {
 	if (during_sbs == false) {
 		return;
@@ -348,6 +362,7 @@ void UstaticArray::nextStep(wxCommandEvent& e) {
 	}
 }
 
+// skipp all the steps in the step by step mode
 void UstaticArray::skipStep(wxCommandEvent& e) {
 	if (during_sbs == false) {
 		return;

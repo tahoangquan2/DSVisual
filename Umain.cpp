@@ -3,6 +3,7 @@
 #include "Usetting.h"
 #include "UstaticArray.h"
 
+// UI for the main frame
 Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 	wxIcon icon("assets/icon.jpg", wxBITMAP_TYPE_JPEG);
 	SetIcon(icon);

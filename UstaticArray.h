@@ -1,5 +1,6 @@
 #include "constant.h"
 
+// UI for the static array
 class UstaticArray : public wxPanel {
 
 public:

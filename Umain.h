@@ -1,5 +1,6 @@
 #include "constant.h"
 
+// main frame
 class Umain : public wxFrame {
 
 public:

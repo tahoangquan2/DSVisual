@@ -1,5 +1,6 @@
 #include "constant.h"
 
+// UI for the menu
 class Umenu : public wxPanel {
 
 public:

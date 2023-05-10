@@ -4,16 +4,20 @@
 
 #include "BstaticArray.h"
 
+// the value of the position
 wxStaticText* id_pos[13];
 
+// get a random number in range [l, r]
 int getRandom(int l, int r) {
 	return (rand() % (r - l + 1)) + l;
 }
 
+// show an error for debugging and announcement 
 void showError(wxString message) {
 	wxMessageBox(message, wxT("Error"), wxICON_ERROR);
 }
 
+// draw the box frame
 void drawBox(wxPanel** boxs, wxPanel* base, short pos, short val = -1000) {
 	if (pos > max_size) {
 		return;
@@ -45,16 +49,19 @@ void drawBox(wxPanel** boxs, wxPanel* base, short pos, short val = -1000) {
 	id_pos[pos] = new wxStaticText(base, wxID_ANY, display_value, wxPoint(box_position[pos] + 20, box_y + 60));
 }
 
+// draw the arrow in the step by step mode
 void drawArrow(wxStaticBitmap* arrow, short pos) {
 	arrow->Show();
 	arrow->SetPosition(wxPoint(box_position[pos] + 10, box_y - 50));
 }
 
+// change mnu frame and chosen frame
 void rGoToPanel(wxPanel* current_panel, wxPanel* goto_panel) {
 	current_panel->Hide();
 	goto_panel->Show();
 }
 
+// clear the array in the backend
 void rClear(short id, wxPanel** boxs, wxPanel* base) {
 	switch (id) {
 	case id_static_array:
@@ -67,6 +74,7 @@ void rClear(short id, wxPanel** boxs, wxPanel* base) {
 	}
 }
 
+// create random input in the backend
 void rCreateRandom(short id, wxPanel** boxs, wxPanel* base) {
 	srand(time(NULL));
 
@@ -81,6 +89,7 @@ void rCreateRandom(short id, wxPanel** boxs, wxPanel* base) {
 	}
 }
 
+// change the string input from file to a readable value for backend
 void rStringToBox(short id, std::string& line, wxPanel** boxs, wxPanel* base) {
 	int value[15] = {};
 	short sz = 0;
@@ -120,6 +129,7 @@ void rStringToBox(short id, std::string& line, wxPanel** boxs, wxPanel* base) {
 	}
 }
 
+// insert a value to a specific position in the backend
 void rInsert(short id, short pos, short val, wxPanel** boxs, wxPanel* base) {
 	switch (id) {
 	case id_static_array:
@@ -132,6 +142,7 @@ void rInsert(short id, short pos, short val, wxPanel** boxs, wxPanel* base) {
 	}
 }
 
+// delete a value to a specific position in the backend
 void rDelete(short id, short pos, wxPanel** boxs, wxPanel* base) {
 	switch (id) {
 	case id_static_array:
@@ -144,6 +155,7 @@ void rDelete(short id, short pos, wxPanel** boxs, wxPanel* base) {
 	}
 }
 
+// update a value to a specific position in the backend
 void rUpdate(short id, short pos, short val, wxPanel** boxs, wxPanel* base) {
 	switch (id) {
 	case id_static_array:
@@ -154,6 +166,7 @@ void rUpdate(short id, short pos, short val, wxPanel** boxs, wxPanel* base) {
 	}
 }
 
+// search a value in the backend
 short rSearch(short id, short val) {
 	switch (id) {
 	case id_static_array:
@@ -167,6 +180,7 @@ short rSearch(short id, short val) {
 	return -1;
 }
 
+// go to the next step in the backend
 bool rNext(short id, wxPanel** boxs, wxPanel* base, wxStaticBitmap* arrow) {
 	bool signal;
 	switch (id) {
@@ -190,6 +204,7 @@ bool rNext(short id, wxPanel** boxs, wxPanel* base, wxStaticBitmap* arrow) {
 	}
 }
 
+// insert a value to a specific position in the backend in the step by step mode
 void rInsertSbs(short id, short pos, short val, wxStaticBitmap* arrow) {
 	switch (id) {
 	case id_static_array:
@@ -199,6 +214,7 @@ void rInsertSbs(short id, short pos, short val, wxStaticBitmap* arrow) {
 	}
 }
 
+// delete a value to a specific position in the backend in the step by step mode
 void rDeleteSbs(short id, short pos, wxStaticBitmap* arrow) {
 	switch (id) {
 	case id_static_array:
@@ -208,6 +224,7 @@ void rDeleteSbs(short id, short pos, wxStaticBitmap* arrow) {
 	}
 }
 
+// update a value to a specific position in the backend in the step by step mode
 void rUpdateSbs(short id, short pos, short val, wxStaticBitmap* arrow) {
 	switch (id) {
 	case id_static_array:
@@ -217,6 +234,7 @@ void rUpdateSbs(short id, short pos, short val, wxStaticBitmap* arrow) {
 	}
 }
 
+// access to a specific position in the backend in the step by step mode
 void rAccessSbs(short id, short pos, wxStaticBitmap* arrow) {
 	switch (id) {
 	case id_static_array:
@@ -226,6 +244,7 @@ void rAccessSbs(short id, short pos, wxStaticBitmap* arrow) {
 	}
 }
 
+// search a value in the backend in the step by step mode
 void rSearchSbs(short id, short val, wxStaticBitmap* arrow) {
 	switch (id) {
 	case id_static_array:
@@ -234,6 +253,7 @@ void rSearchSbs(short id, short val, wxStaticBitmap* arrow) {
 	}
 }
 
+// return the current array size
 int rBoxSize(short id) {
 	switch (id) {
 	case id_static_array:
@@ -244,6 +264,7 @@ int rBoxSize(short id) {
 	return 0;
 }
 
+// return the value of the array
 int rAtBox(short id, short pos) {
 	switch (id) {
 	case id_static_array:
@@ -258,6 +279,7 @@ int rAtBox(short id, short pos) {
 	return -1000;
 }
 
+// return which is the current process during step by step mode
 short rSbsMode(short id) {
 	switch (id) {
 	case id_static_array:

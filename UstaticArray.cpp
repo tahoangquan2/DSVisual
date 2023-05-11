@@ -49,13 +49,20 @@ UstaticArray::UstaticArray(wxPanel* parent) : wxPanel(parent) {
 
 // go back to menu
 void UstaticArray::goBack(wxCommandEvent& e) {
-	rGoToPanel(this, parent);
 	wxCommandEvent empty_e = wxCommandEvent();
 	createRandom(empty_e);
+	rGoToPanel(this, parent);
 }
 
 // create random input
 void UstaticArray::createRandom(wxCommandEvent& e) {
+	for (short i = 1; i <= max_size; ++i) {
+		if (id_pos[i] != nullptr) {
+			id_pos[i]->Destroy();
+			id_pos[i] = nullptr;
+		}
+	}
+
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
 		output_access_val = nullptr;
@@ -68,6 +75,12 @@ void UstaticArray::createRandom(wxCommandEvent& e) {
 
 	rClear(id_static_array, box, base);
 	rCreateRandom(id_static_array, box, base);
+
+	for (short i = 1; i <= rBoxSize(id_static_array); ++i) {
+		wxString display_value = "";
+		display_value << (i - 1);
+		id_pos[i] = new wxStaticText(base, wxID_ANY, display_value, wxPoint(box_position[i] + 20, box_y + 60));
+	}
 
 	input_insert_pos->SetRange(0, rBoxSize(id_static_array) - 1);
 	input_delete_pos->SetRange(0, rBoxSize(id_static_array) - 1);

@@ -1,7 +1,7 @@
 #include "constant.h"
 
-// UI for the dynamic array
-class UdynamicArray : public wxPanel {
+// UI for the simply linked list
+class UsimplyLinkedList : public wxPanel {
 
 public:
 	wxPanel* base = new wxPanel(this);
@@ -26,8 +26,9 @@ public:
 	short fix_pos = 0;
 	short fix_val = 0;
 	wxStaticText* id_pos[15];
+	wxStaticBitmap* arrow2[15];
 
-	UdynamicArray(wxPanel* parent);
+	UsimplyLinkedList(wxPanel* parent);
 
 	void goBack(wxCommandEvent& e);
 	void createRandom(wxCommandEvent& e);

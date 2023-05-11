@@ -6,6 +6,7 @@
 
 const short id_static_array = 1;
 const short id_dynamic_array = 2;
+const short id_simply_linked_list = 3;
 
 const int size1 = 1090;
 const int size2 = 690;

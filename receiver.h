@@ -4,7 +4,7 @@
 
 // for receiver
 void showError(wxString message);
-void drawBox(wxPanel** boxs, wxPanel* base, short pos, short val);
+void drawBox(wxPanel** boxs, wxPanel* base, short pos, short val, short mode);
 void drawArrow(wxStaticBitmap* arrow, short pos);
 
 // for UI

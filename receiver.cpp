@@ -2,12 +2,11 @@
 
 #include "UstaticArray.h"
 #include "UdynamicArray.h"
+#include "UsimplyLinkedList.h"
 
 #include "BstaticArray.h"
 #include "BdynamicArray.h"
-
-// the value of the position
-wxStaticText* id_pos[13];
+#include "BsimplyLinkedList.h"
 
 // get a random number in range [l, r]
 int getRandom(int l, int r) {
@@ -20,35 +19,27 @@ void showError(wxString message) {
 }
 
 // draw the box frame
-void drawBox(wxPanel** boxs, wxPanel* base, short pos, short val = -1000) {
+void drawBox(wxPanel** boxs, wxPanel* base, short pos, short val = -1000, short mode = 0) {
 	if (pos > max_size) {
 		return;
 	}
 
 	if (val == -1000) {
-		wxString empty_space = " ";
 		if (boxs[pos] != nullptr) {
 			boxs[pos]->Destroy();
 			boxs[pos] = nullptr;
 		}
-		if (id_pos[pos] != nullptr) {
-			id_pos[pos]->Destroy();
-			id_pos[pos] = nullptr;
-		}
+
 		return;
 	}
 
 	boxs[pos] = new wxPanel(base, wxID_ANY, wxPoint(box_position[pos], box_y), wxSize(box_size, box_size), wxBORDER_DOUBLE);
 	boxs[pos]->SetBackgroundColour(wxColour(box_color, box_color, box_color));
 
-	wxString display_value;
+	wxString display_value = "";
 	display_value << val;
 	wxStaticText* text = new wxStaticText(boxs[pos], wxID_ANY, display_value);
 	text->Center();
-
-	display_value = "";
-	display_value << (pos - 1);
-	id_pos[pos] = new wxStaticText(base, wxID_ANY, display_value, wxPoint(box_position[pos] + 20, box_y + 60));
 }
 
 // draw the arrow in the step by step mode
@@ -57,7 +48,7 @@ void drawArrow(wxStaticBitmap* arrow, short pos) {
 	arrow->SetPosition(wxPoint(box_position[pos] + 10, box_y - 50));
 }
 
-// change mnu frame and chosen frame
+// change menu frame and chosen frame
 void rGoToPanel(wxPanel* current_panel, wxPanel* goto_panel) {
 	current_panel->Hide();
 	goto_panel->Show();
@@ -68,7 +59,7 @@ void rClear(short id, wxPanel** boxs, wxPanel* base) {
 	switch (id) {
 	case id_static_array:
 		for (short i = 1; i <= BstaticArray::a_size; ++i) {
-			BstaticArray::a[i] = 0;
+			BstaticArray::a[i] = -1000;
 			drawBox(boxs, base, i);
 		}
 		BstaticArray::a_size = 0;
@@ -76,17 +67,24 @@ void rClear(short id, wxPanel** boxs, wxPanel* base) {
 
 	case id_dynamic_array:
 		for (short i = 1; i <= BdynamicArray::a_size; ++i) {
-			BdynamicArray::a[i] = 0;
+			BdynamicArray::a[i] = -1000;
 			drawBox(boxs, base, i);
 		}
 		BdynamicArray::a_size = 0;
+		break;
+
+	case id_simply_linked_list:
+		for (short i = 1; i <= BsimplyLinkedList::a_size; ++i) {
+			BsimplyLinkedList::a[i] = -1000;
+			drawBox(boxs, base, i);
+		}
+		BsimplyLinkedList::a_size = 0;
 		break;
 	}
 }
 
 // create random input in the backend
 void rCreateRandom(short id, wxPanel** boxs, wxPanel* base) {
-	srand(time(NULL));
 	short random_size = getRandom(3, 12);
 
 	switch (id) {
@@ -101,6 +99,14 @@ void rCreateRandom(short id, wxPanel** boxs, wxPanel* base) {
 		for (short i = 1; i <= random_size; ++i) {
 			BdynamicArray::addBox(getRandom(1, 69));
 			drawBox(boxs, base, i, BdynamicArray::a[i]);
+		}
+		break;
+
+
+	case id_simply_linked_list:
+		for (short i = 1; i <= random_size; ++i) {
+			BsimplyLinkedList::addBox(getRandom(1, 69));
+			drawBox(boxs, base, i, BsimplyLinkedList::a[i], 1);
 		}
 		break;
 	}
@@ -150,6 +156,14 @@ void rStringToBox(short id, std::string& line, wxPanel** boxs, wxPanel* base) {
 			drawBox(boxs, base, i, BdynamicArray::a[i]);
 		}
 		break;
+
+
+	case id_simply_linked_list:
+		for (short i = 1; i <= sz; ++i) {
+			BsimplyLinkedList::addBox(value[i]);
+			drawBox(boxs, base, i, BsimplyLinkedList::a[i]);
+		}
+		break;
 	}
 }
 
@@ -171,6 +185,16 @@ void rInsert(short id, short pos, short val, wxPanel** boxs, wxPanel* base) {
 		for (short i = 1; i <= BdynamicArray::a_size; ++i) {
 			drawBox(boxs, base, i);
 			drawBox(boxs, base, i, BdynamicArray::a[i]);
+		}
+		break;
+
+
+	case id_simply_linked_list:
+		++pos;
+		BsimplyLinkedList::insertPosition(pos, val);
+		for (short i = 1; i <= BsimplyLinkedList::a_size; ++i) {
+			drawBox(boxs, base, i);
+			drawBox(boxs, base, i, BsimplyLinkedList::a[i]);
 		}
 		break;
 	}
@@ -196,6 +220,16 @@ void rDelete(short id, short pos, wxPanel** boxs, wxPanel* base) {
 			drawBox(boxs, base, i, BdynamicArray::a[i]);
 		}
 		break;
+
+
+	case id_simply_linked_list:
+		++pos;
+		BsimplyLinkedList::deletePosition(pos);
+		for (short i = 1; i <= BsimplyLinkedList::a_size; ++i) {
+			drawBox(boxs, base, i);
+			drawBox(boxs, base, i, BsimplyLinkedList::a[i]);
+		}
+		break;
 	}
 }
 
@@ -215,6 +249,14 @@ void rUpdate(short id, short pos, short val, wxPanel** boxs, wxPanel* base) {
 		drawBox(boxs, base, pos);
 		drawBox(boxs, base, pos, BdynamicArray::a[pos]);
 		break;
+
+
+	case id_simply_linked_list:
+		++pos;
+		BsimplyLinkedList::a[pos] = val;
+		drawBox(boxs, base, pos);
+		drawBox(boxs, base, pos, BsimplyLinkedList::a[pos]);
+		break;
 	}
 }
 
@@ -232,6 +274,15 @@ short rSearch(short id, short val) {
 	case id_dynamic_array:
 		for (short i = 1; i <= BdynamicArray::a_size; ++i) {
 			if (BdynamicArray::a[i] == val) {
+				return i - 1;
+			}
+		}
+		break;
+
+
+	case id_simply_linked_list:
+		for (short i = 1; i <= BsimplyLinkedList::a_size; ++i) {
+			if (BsimplyLinkedList::a[i] == val) {
 				return i - 1;
 			}
 		}
@@ -280,6 +331,25 @@ bool rNext(short id, wxPanel** boxs, wxPanel* base, wxStaticBitmap* arrow) {
 		}
 
 		break;
+
+
+	case id_simply_linked_list:
+		signal = BsimplyLinkedList::next();
+
+		drawArrow(arrow, BsimplyLinkedList::current);
+		drawBox(boxs, base, BsimplyLinkedList::current);
+		drawBox(boxs, base, BsimplyLinkedList::current, BsimplyLinkedList::b[BsimplyLinkedList::current]);
+
+		if (BsimplyLinkedList::current + 1 <= BsimplyLinkedList::b_size) {
+			drawBox(boxs, base, BsimplyLinkedList::current + 1);
+			drawBox(boxs, base, BsimplyLinkedList::current + 1, BsimplyLinkedList::b[BsimplyLinkedList::current + 1]);
+		}
+
+		if (signal == true) {
+			return true;
+		}
+
+		break;
 	}
 }
 
@@ -296,6 +366,13 @@ void rInsertSbs(short id, short pos, short val, wxStaticBitmap* arrow) {
 		++pos;
 		BdynamicArray::setup(pos, val, 1);
 		drawArrow(arrow, BdynamicArray::current);
+		break;
+
+
+	case id_simply_linked_list:
+		++pos;
+		BsimplyLinkedList::setup(pos, val, 1);
+		drawArrow(arrow, BsimplyLinkedList::current);
 		break;
 	}
 }
@@ -314,6 +391,12 @@ void rDeleteSbs(short id, short pos, wxStaticBitmap* arrow) {
 		BdynamicArray::setup(pos, 0, 2);
 		drawArrow(arrow, BdynamicArray::current);
 		break;
+
+	case id_simply_linked_list:
+		++pos;
+		BsimplyLinkedList::setup(pos, 0, 2);
+		drawArrow(arrow, BsimplyLinkedList::current);
+		break;
 	}
 }
 
@@ -330,6 +413,12 @@ void rUpdateSbs(short id, short pos, short val, wxStaticBitmap* arrow) {
 		++pos;
 		BdynamicArray::setup(pos, val, 3);
 		drawArrow(arrow, BdynamicArray::current);
+		break;
+
+	case id_simply_linked_list:
+		++pos;
+		BsimplyLinkedList::setup(pos, val, 3);
+		drawArrow(arrow, BsimplyLinkedList::current);
 		break;
 	}
 }
@@ -348,6 +437,13 @@ void rAccessSbs(short id, short pos, wxStaticBitmap* arrow) {
 		BdynamicArray::setup(pos, 0, 4);
 		drawArrow(arrow, BdynamicArray::current);
 		break;
+
+
+	case id_simply_linked_list:
+		++pos;
+		BsimplyLinkedList::setup(pos, 0, 4);
+		drawArrow(arrow, BdynamicArray::current);
+		break;
 	}
 }
 
@@ -363,6 +459,11 @@ void rSearchSbs(short id, short val, wxStaticBitmap* arrow) {
 		BdynamicArray::setup(0, val, 5);
 		drawArrow(arrow, BdynamicArray::current);
 		break;
+
+	case id_simply_linked_list:
+		BsimplyLinkedList::setup(0, val, 5);
+		drawArrow(arrow, BsimplyLinkedList::current);
+		break;
 	}
 }
 
@@ -375,6 +476,10 @@ int rBoxSize(short id) {
 
 	case id_dynamic_array:
 		return BdynamicArray::a_size;
+		break;
+
+	case id_simply_linked_list:
+		return BsimplyLinkedList::a_size;
 		break;
 	}
 
@@ -399,6 +504,14 @@ int rAtBox(short id, short pos) {
 
 		return BdynamicArray::a[pos];
 		break;
+
+	case id_simply_linked_list:
+		if (pos > BsimplyLinkedList::a_size) {
+			return -1000;
+		}
+
+		return BsimplyLinkedList::a[pos];
+		break;
 	}
 
 	return -1000;
@@ -413,6 +526,10 @@ short rSbsMode(short id) {
 
 	case id_dynamic_array:
 		return BdynamicArray::mode;
+		break;
+
+	case id_simply_linked_list:
+		return BsimplyLinkedList::mode;
 		break;
 	}
 

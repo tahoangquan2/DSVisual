@@ -1,8 +1,10 @@
 #include "Umain.h"
+#include "receiver.h"
 #include "Umenu.h"
 #include "Usetting.h"
 #include "UstaticArray.h"
 #include "UdynamicArray.h"
+#include "UsimplyLinkedList.h"
 
 // UI for the main frame
 Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
@@ -12,6 +14,7 @@ Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 
 	Umenu* u_menu = new Umenu(base);
 	u_menu->SetSize(size1, size2);
+	u_menu->Show();
 
 	Usetting* u_setting = new Usetting(base);
 	u_setting->SetSize(size1, size2);
@@ -25,12 +28,17 @@ Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 	u_dynamic_array->SetSize(size1, size2);
 	u_dynamic_array->Hide();
 
+	UsimplyLinkedList* u_simply_linked_list = new UsimplyLinkedList(base);
+	u_simply_linked_list->SetSize(size1, size2);
+	u_simply_linked_list->Hide();
+
 	u_setting->parent = u_menu;
 	u_static_array->parent = u_menu;
 	u_dynamic_array->parent = u_menu;
+	u_simply_linked_list->parent = u_menu;
 	u_menu->parent_setting = u_setting;
 	u_menu->parent_static_array = u_static_array;
 	u_menu->parent_dynamic_array = u_dynamic_array;
+	u_menu->parent_simply_linked_list = u_simply_linked_list;
 
-	u_menu->Show();
 }

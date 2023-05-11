@@ -2,7 +2,7 @@
 
 // backend for dynamic array
 namespace BdynamicArray {
-	short a_size = 0, b_size = 0, current, a[15], b[15], value, position, mode;
+	short a_size = 0, b_size = 0, current, value, position, mode, a[15], b[15];
 	bool move;
 
 	bool addBox(short val = 0) {

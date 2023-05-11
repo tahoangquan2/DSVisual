@@ -36,13 +36,6 @@ UsimplyLinkedList::UsimplyLinkedList(wxPanel* parent) : wxPanel(parent) {
 		arrow2[i]->Hide();
 	}
 
-	for (short i = 1; i <= max_size; ++i) {
-		wxString display_value = "";
-		display_value << (i - 1);
-		id_pos[i] = new wxStaticText(base, wxID_ANY, display_value, wxPoint(box_position[i] + 20, box_y + 60));
-		id_pos[i]->Hide();
-	}
-
 	wxStaticText* text_insert_pos = new wxStaticText(base, wxID_ANY, "Position:", wxPoint(330, 512));
 	wxStaticText* text_insert_val = new wxStaticText(base, wxID_ANY, "Value:", wxPoint(330, 452));
 	wxStaticText* text_delete_pos = new wxStaticText(base, wxID_ANY, "Position:", wxPoint(460, 512));
@@ -95,7 +88,10 @@ void UsimplyLinkedList::createRandom(wxCommandEvent& e) {
 	}
 
 	for (short i = 1; i <= max_size; ++i) {
-		id_pos[i]->Hide();
+		if (id_pos[i] != nullptr) {
+			id_pos[i]->Destroy();
+			id_pos[i] = nullptr;
+		}
 
 		if (i > 1) {
 			arrow2[i]->Hide();
@@ -125,7 +121,7 @@ void UsimplyLinkedList::createRandom(wxCommandEvent& e) {
 		}
 	}
 
-	input_insert_pos->SetRange(0, rBoxSize(id_simply_linked_list) - 1);
+	input_insert_pos->SetRange(0, rBoxSize(id_simply_linked_list));
 	input_delete_pos->SetRange(0, rBoxSize(id_simply_linked_list) - 1);
 	input_update_pos->SetRange(0, rBoxSize(id_simply_linked_list) - 1);
 	input_access_pos->SetRange(0, rBoxSize(id_simply_linked_list) - 1);
@@ -171,6 +167,27 @@ void UsimplyLinkedList::importFile(wxCommandEvent& e) {
 	}
 	else {
 		showError(wxT("Cannot open file"));
+	}
+
+	for (short i = 1; i <= max_size; ++i) {
+		if (id_pos[i] != nullptr) {
+			id_pos[i]->Destroy();
+			id_pos[i] = nullptr;
+		}
+
+		if (i > 1) {
+			arrow2[i]->Hide();
+		}
+	}
+
+	for (short i = 1; i <= rBoxSize(id_simply_linked_list); ++i) {
+		wxString display_value = "";
+		display_value << (i - 1);
+		id_pos[i] = new wxStaticText(base, wxID_ANY, display_value, wxPoint(box_position[i] + 20, box_y + 60));
+
+		if (i > 1) {
+			arrow2[i]->Show();
+		}
 	}
 }
 
@@ -230,15 +247,55 @@ void UsimplyLinkedList::insertPosition(wxCommandEvent& e) {
 	short pos = input_insert_pos->GetValue();
 	short val = input_insert_val->GetValue();
 
-	if (sbs_mode == false) {
+	if (sbs_mode == false || skip_sbs == true) {
 		rInsert(id_simply_linked_list, pos, val, box, base);
+		skip_sbs = false;
 	}
 	else {
 		during_sbs = true;
 		fix_pos = pos;
 		fix_val = val;
-		rInsertSbs(id_simply_linked_list, pos, val, arrow);
+		if (rBoxSize(id_simply_linked_list) == max_size) {
+			during_sbs = false;
+			showError("The maximum number of element you can have is 12");
+			return;
+		}
+		else {
+			rInsertSbs(id_simply_linked_list, pos, val, arrow);
+		}
 	}
+
+	for (short i = 1; i <= max_size; ++i) {
+		if (id_pos[i] != nullptr) {
+			id_pos[i]->Destroy();
+			id_pos[i] = nullptr;
+		}
+
+		if (i > 1) {
+			arrow2[i]->Hide();
+		}
+	}
+
+	for (short i = 1; i <= rBoxSize(id_simply_linked_list); ++i) {
+		wxString display_value = "";
+		display_value << (i - 1);
+		id_pos[i] = new wxStaticText(base, wxID_ANY, display_value, wxPoint(box_position[i] + 20, box_y + 60));
+
+		if (i > 1) {
+			arrow2[i]->Show();
+		}
+	}
+
+	input_insert_pos->SetRange(0, rBoxSize(id_simply_linked_list));
+	input_delete_pos->SetRange(0, rBoxSize(id_simply_linked_list) - 1);
+	input_update_pos->SetRange(0, rBoxSize(id_simply_linked_list) - 1);
+	input_access_pos->SetRange(0, rBoxSize(id_simply_linked_list) - 1);
+
+	input_delete_pos->SetValue(0);
+	input_update_pos->SetValue(0);
+	input_update_val->SetValue(0);
+	input_access_pos->SetValue(0);
+	input_search_val->SetValue(0);
 }
 
 // delete a value of a specific position
@@ -246,6 +303,7 @@ void UsimplyLinkedList::deletePosition(wxCommandEvent& e) {
 	if (during_sbs == true) {
 		return;
 	}
+	
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
 		output_access_val = nullptr;
@@ -258,14 +316,47 @@ void UsimplyLinkedList::deletePosition(wxCommandEvent& e) {
 
 	short pos = input_delete_pos->GetValue();
 
-	if (sbs_mode == false) {
+	if (sbs_mode == false || skip_sbs == true) {
 		rDelete(id_simply_linked_list, pos, box, base);
+		skip_sbs = false;
 	}
 	else {
 		during_sbs = true;
 		fix_pos = pos;
 		rDeleteSbs(id_simply_linked_list, pos, arrow);
 	}
+
+	for (short i = 1; i <= max_size; ++i) {
+		if (id_pos[i] != nullptr) {
+			id_pos[i]->Destroy();
+			id_pos[i] = nullptr;
+		}
+
+		if (i > 1) {
+			arrow2[i]->Hide();
+		}
+	}
+
+	for (short i = 1; i <= rBoxSize(id_simply_linked_list); ++i) {
+		wxString display_value = "";
+		display_value << (i - 1);
+		id_pos[i] = new wxStaticText(base, wxID_ANY, display_value, wxPoint(box_position[i] + 20, box_y + 60));
+
+		if (i > 1) {
+			arrow2[i]->Show();
+		}
+	}
+
+	input_insert_pos->SetRange(0, rBoxSize(id_simply_linked_list));
+	input_delete_pos->SetRange(0, rBoxSize(id_simply_linked_list) - 1);
+	input_update_pos->SetRange(0, rBoxSize(id_simply_linked_list) - 1);
+	input_access_pos->SetRange(0, rBoxSize(id_simply_linked_list) - 1);
+
+	input_insert_pos->SetValue(0);
+	input_insert_val->SetValue(0);
+	input_update_val->SetValue(0);
+	input_access_pos->SetValue(0);
+	input_search_val->SetValue(0);
 }
 
 // update a value of a specific position
@@ -287,8 +378,9 @@ void UsimplyLinkedList::updatePosition(wxCommandEvent& e) {
 	short pos = input_update_pos->GetValue();
 	short val = input_update_val->GetValue();
 
-	if (sbs_mode == false) {
+	if (sbs_mode == false || skip_sbs == true) {
 		rUpdate(id_simply_linked_list, pos, val, box, base);
+		skip_sbs = false;
 	}
 	else {
 		during_sbs = true;
@@ -311,9 +403,10 @@ void UsimplyLinkedList::accessPosition(wxCommandEvent& e) {
 
 	short pos = input_access_pos->GetValue();
 
-	if (sbs_mode == false) {
+	if (sbs_mode == false || skip_sbs == true) {
+		skip_sbs = false;
 		wxString text = "";
-		text << rAtBox(id_simply_linked_list, pos + 1);
+		text << rAtBox(id_simply_linked_list, pos);
 		output_access_val = new wxStaticText(base, wxID_ANY, text, wxPoint(775, 475));
 		output_access_val->Show();
 	}
@@ -337,7 +430,8 @@ void UsimplyLinkedList::searchValue(wxCommandEvent& e) {
 
 	short val = input_search_val->GetValue();
 
-	if (sbs_mode == false) {
+	if (sbs_mode == false || skip_sbs == true) {
+		skip_sbs = false;
 		short pos = rSearch(id_simply_linked_list, val);
 		wxString text = "";
 
@@ -361,6 +455,7 @@ void UsimplyLinkedList::searchValue(wxCommandEvent& e) {
 // turn on the step by step mode
 void UsimplyLinkedList::sbsModeOn(wxCommandEvent& e) {
 	sbs_mode = true;
+	skip_sbs = false;
 	button_sbs->Hide();
 	button_sbs2->Show();
 	button_next->Show();
@@ -375,6 +470,7 @@ void UsimplyLinkedList::sbsModeOff(wxCommandEvent& e) {
 	skipStep(empty_e);
 
 	sbs_mode = false;
+	skip_sbs = false;
 	button_sbs2->Hide();
 	button_sbs->Show();
 	button_next->Hide();
@@ -401,31 +497,40 @@ void UsimplyLinkedList::skipStep(wxCommandEvent& e) {
 		return;
 	}
 
+	wxCommandEvent empty_e = wxCommandEvent();
 	wxString text = "";
 	short pos;
 	during_sbs = false;
+	skip_sbs = true;
 
 	switch (rSbsMode(id_simply_linked_list)) {
 	case 1:
-		rInsert(id_simply_linked_list, fix_pos, fix_val, box, base);
+		input_insert_pos->SetValue(fix_pos);
+		input_insert_val->SetValue(fix_val);
+		insertPosition(empty_e);
 		break;
 
 	case 2:
-		rDelete(id_simply_linked_list, fix_pos, box, base);
+		input_delete_pos->SetValue(fix_pos);
+		deletePosition(empty_e);
 		break;
 
 	case 3:
-		rUpdate(id_simply_linked_list, fix_pos, fix_val, box, base);
+		input_update_pos->SetValue(fix_pos);
+		input_insert_val->SetValue(fix_val);
+		updatePosition(empty_e);
 		break;
 
 	case 4:
-		text << rAtBox(id_simply_linked_list, fix_pos + 1);
+		text << rAtBox(id_simply_linked_list, fix_pos);
 		output_access_val = new wxStaticText(base, wxID_ANY, text, wxPoint(775, 475));
 		output_access_val->Show();
+		skip_sbs = false;
 		break;
 
 	case 5:
 		pos = rSearch(id_simply_linked_list, fix_val);
+		skip_sbs = false;
 
 		if (pos == -1) {
 			text = "None";

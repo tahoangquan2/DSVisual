@@ -27,6 +27,7 @@ public:
 	short fix_val = 0;
 	wxStaticText* id_pos[15];
 	wxStaticBitmap* arrow2[15];
+	bool skip_sbs = false;
 
 	UsimplyLinkedList(wxPanel* parent);
 

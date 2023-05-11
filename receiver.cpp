@@ -78,7 +78,8 @@ void rClear(short id, wxPanel** boxs, wxPanel* base) {
 			BsimplyLinkedList::a[i] = -1000;
 			drawBox(boxs, base, i);
 		}
-		BsimplyLinkedList::a_size = 0;
+		BsimplyLinkedList::Erase();
+		BsimplyLinkedList::Apply();
 		break;
 	}
 }
@@ -108,6 +109,7 @@ void rCreateRandom(short id, wxPanel** boxs, wxPanel* base) {
 			BsimplyLinkedList::addBox(getRandom(1, 69));
 			drawBox(boxs, base, i, BsimplyLinkedList::a[i], 1);
 		}
+		BsimplyLinkedList::Reverse();
 		break;
 	}
 }
@@ -163,6 +165,7 @@ void rStringToBox(short id, std::string& line, wxPanel** boxs, wxPanel* base) {
 			BsimplyLinkedList::addBox(value[i]);
 			drawBox(boxs, base, i, BsimplyLinkedList::a[i]);
 		}
+		BsimplyLinkedList::Reverse();
 		break;
 	}
 }
@@ -191,10 +194,14 @@ void rInsert(short id, short pos, short val, wxPanel** boxs, wxPanel* base) {
 
 	case id_simply_linked_list:
 		++pos;
-		BsimplyLinkedList::insertPosition(pos, val);
+		if (BsimplyLinkedList::insertPosition(pos, val) == false) {
+			showError("The maximum number of element you can have is 12");
+			return;
+		}
+
 		for (short i = 1; i <= BsimplyLinkedList::a_size; ++i) {
 			drawBox(boxs, base, i);
-			drawBox(boxs, base, i, BsimplyLinkedList::a[i]);
+			drawBox(boxs, base, i, BsimplyLinkedList::a[i], 1);
 		}
 		break;
 	}
@@ -224,10 +231,12 @@ void rDelete(short id, short pos, wxPanel** boxs, wxPanel* base) {
 
 	case id_simply_linked_list:
 		++pos;
-		BsimplyLinkedList::deletePosition(pos);
 		for (short i = 1; i <= BsimplyLinkedList::a_size; ++i) {
 			drawBox(boxs, base, i);
-			drawBox(boxs, base, i, BsimplyLinkedList::a[i]);
+		}
+		BsimplyLinkedList::deletePosition(pos);
+		for (short i = 1; i <= BsimplyLinkedList::a_size; ++i) {
+			drawBox(boxs, base, i, BsimplyLinkedList::a[i], 1);
 		}
 		break;
 	}
@@ -253,9 +262,10 @@ void rUpdate(short id, short pos, short val, wxPanel** boxs, wxPanel* base) {
 
 	case id_simply_linked_list:
 		++pos;
-		BsimplyLinkedList::a[pos] = val;
+		BsimplyLinkedList::Update(pos, val);
+		BsimplyLinkedList::Apply();
 		drawBox(boxs, base, pos);
-		drawBox(boxs, base, pos, BsimplyLinkedList::a[pos]);
+		drawBox(boxs, base, pos, BsimplyLinkedList::a[pos], 1);
 		break;
 	}
 }
@@ -281,11 +291,7 @@ short rSearch(short id, short val) {
 
 
 	case id_simply_linked_list:
-		for (short i = 1; i <= BsimplyLinkedList::a_size; ++i) {
-			if (BsimplyLinkedList::a[i] == val) {
-				return i - 1;
-			}
-		}
+		return BsimplyLinkedList::Search(val);
 		break;
 	}
 
@@ -337,13 +343,6 @@ bool rNext(short id, wxPanel** boxs, wxPanel* base, wxStaticBitmap* arrow) {
 		signal = BsimplyLinkedList::next();
 
 		drawArrow(arrow, BsimplyLinkedList::current);
-		drawBox(boxs, base, BsimplyLinkedList::current);
-		drawBox(boxs, base, BsimplyLinkedList::current, BsimplyLinkedList::b[BsimplyLinkedList::current]);
-
-		if (BsimplyLinkedList::current + 1 <= BsimplyLinkedList::b_size) {
-			drawBox(boxs, base, BsimplyLinkedList::current + 1);
-			drawBox(boxs, base, BsimplyLinkedList::current + 1, BsimplyLinkedList::b[BsimplyLinkedList::current + 1]);
-		}
 
 		if (signal == true) {
 			return true;
@@ -442,7 +441,7 @@ void rAccessSbs(short id, short pos, wxStaticBitmap* arrow) {
 	case id_simply_linked_list:
 		++pos;
 		BsimplyLinkedList::setup(pos, 0, 4);
-		drawArrow(arrow, BdynamicArray::current);
+		drawArrow(arrow, BsimplyLinkedList::current);
 		break;
 	}
 }
@@ -479,7 +478,7 @@ int rBoxSize(short id) {
 		break;
 
 	case id_simply_linked_list:
-		return BsimplyLinkedList::a_size;
+		return BsimplyLinkedList::Size();
 		break;
 	}
 
@@ -510,7 +509,7 @@ int rAtBox(short id, short pos) {
 			return -1000;
 		}
 
-		return BsimplyLinkedList::a[pos];
+		return BsimplyLinkedList::Value(pos);
 		break;
 	}
 

@@ -87,17 +87,6 @@ void UsimplyLinkedList::createRandom(wxCommandEvent& e) {
 		return;
 	}
 
-	for (short i = 1; i <= max_size; ++i) {
-		if (id_pos[i] != nullptr) {
-			id_pos[i]->Destroy();
-			id_pos[i] = nullptr;
-		}
-
-		if (i > 1) {
-			arrow2[i]->Hide();
-		}
-	}
-
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
 		output_access_val = nullptr;
@@ -110,6 +99,17 @@ void UsimplyLinkedList::createRandom(wxCommandEvent& e) {
 
 	rClear(id_simply_linked_list, box, base);
 	rCreateRandom(id_simply_linked_list, box, base);
+
+	for (short i = 1; i <= max_size; ++i) {
+		if (id_pos[i] != nullptr) {
+			id_pos[i]->Destroy();
+			id_pos[i] = nullptr;
+		}
+
+		if (i > 1) {
+			arrow2[i]->Hide();
+		}
+	}
 
 	for (short i = 1; i <= rBoxSize(id_simply_linked_list); ++i) {
 		wxString display_value = "";
@@ -189,6 +189,19 @@ void UsimplyLinkedList::importFile(wxCommandEvent& e) {
 			arrow2[i]->Show();
 		}
 	}
+
+	input_insert_pos->SetRange(0, rBoxSize(id_simply_linked_list));
+	input_delete_pos->SetRange(0, rBoxSize(id_simply_linked_list) - 1);
+	input_update_pos->SetRange(0, rBoxSize(id_simply_linked_list) - 1);
+	input_access_pos->SetRange(0, rBoxSize(id_simply_linked_list) - 1);
+
+	input_insert_pos->SetValue(0);
+	input_insert_val->SetValue(0);
+	input_delete_pos->SetValue(0);
+	input_update_pos->SetValue(0);
+	input_update_val->SetValue(0);
+	input_access_pos->SetValue(0);
+	input_search_val->SetValue(0);
 }
 
 // export the input to a txt file
@@ -214,12 +227,12 @@ void UsimplyLinkedList::exportFile(wxCommandEvent& e) {
 
 	export_file.open(file_path, std::ofstream::out);
 
-	for (short i = 1; i <= max_size; ++i) {
+	for (short i = 0; i <= max_size; ++i) {
 		if (rAtBox(id_simply_linked_list, i) == -1000) {
 			break;
 		}
 
-		if (i > 1) {
+		if (i > 0) {
 			export_file << ",";
 		}
 		export_file << rAtBox(id_simply_linked_list, i);

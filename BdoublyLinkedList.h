@@ -1,7 +1,7 @@
 #include "constant.h"
 
-// backend for simply linked list
-namespace BsimplyLinkedList {
+// backend for doubly linked list
+namespace BdoublyLinkedList {
 	struct Node {
 		short value;
 		Node* next;

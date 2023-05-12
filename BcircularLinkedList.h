@@ -1,7 +1,7 @@
 #include "constant.h"
 
-// backend for simply linked list
-namespace BsimplyLinkedList {
+// backend for circular linked list
+namespace BcircularLinkedList {
 	struct Node {
 		short value;
 		Node* next;

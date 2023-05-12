@@ -56,13 +56,6 @@ void UstaticArray::goBack(wxCommandEvent& e) {
 
 // create random input
 void UstaticArray::createRandom(wxCommandEvent& e) {
-	for (short i = 1; i <= max_size; ++i) {
-		if (id_pos[i] != nullptr) {
-			id_pos[i]->Destroy();
-			id_pos[i] = nullptr;
-		}
-	}
-
 	if (output_access_val != nullptr) {
 		output_access_val->Destroy();
 		output_access_val = nullptr;
@@ -75,6 +68,13 @@ void UstaticArray::createRandom(wxCommandEvent& e) {
 
 	rClear(id_static_array, box, base);
 	rCreateRandom(id_static_array, box, base);
+
+	for (short i = 1; i <= max_size; ++i) {
+		if (id_pos[i] != nullptr) {
+			id_pos[i]->Destroy();
+			id_pos[i] = nullptr;
+		}
+	}
 
 	for (short i = 1; i <= rBoxSize(id_static_array); ++i) {
 		wxString display_value = "";
@@ -129,6 +129,32 @@ void UstaticArray::importFile(wxCommandEvent& e) {
 	else {
 		showError(wxT("Cannot open file"));
 	}
+
+	for (short i = 1; i <= max_size; ++i) {
+		if (id_pos[i] != nullptr) {
+			id_pos[i]->Destroy();
+			id_pos[i] = nullptr;
+		}
+	}
+
+	for (short i = 1; i <= rBoxSize(id_static_array); ++i) {
+		wxString display_value = "";
+		display_value << (i - 1);
+		id_pos[i] = new wxStaticText(base, wxID_ANY, display_value, wxPoint(box_position[i] + 20, box_y + 60));
+	}
+
+	input_insert_pos->SetRange(0, rBoxSize(id_static_array) - 1);
+	input_delete_pos->SetRange(0, rBoxSize(id_static_array) - 1);
+	input_update_pos->SetRange(0, rBoxSize(id_static_array) - 1);
+	input_access_pos->SetRange(0, rBoxSize(id_static_array) - 1);
+
+	input_insert_pos->SetValue(0);
+	input_insert_val->SetValue(0);
+	input_delete_pos->SetValue(0);
+	input_update_pos->SetValue(0);
+	input_update_val->SetValue(0);
+	input_access_pos->SetValue(0);
+	input_search_val->SetValue(0);
 }
 
 // export the input to a txt file

@@ -3,10 +3,14 @@
 #include "UstaticArray.h"
 #include "UdynamicArray.h"
 #include "UsimplyLinkedList.h"
+#include "UdoublyLinkedList.h"
+#include "UcircularLinkedList.h"
 
 #include "BstaticArray.h"
 #include "BdynamicArray.h"
 #include "BsimplyLinkedList.h"
+#include "BdoublyLinkedList.h"
+#include "BcircularLinkedList.h"
 
 // get a random number in range [l, r]
 int getRandom(int l, int r) {
@@ -81,6 +85,24 @@ void rClear(short id, wxPanel** boxs, wxPanel* base) {
 		BsimplyLinkedList::Erase();
 		BsimplyLinkedList::Apply();
 		break;
+
+	case id_doubly_linked_list:
+		for (short i = 1; i <= BdoublyLinkedList::a_size; ++i) {
+			BdoublyLinkedList::a[i] = -1000;
+			drawBox(boxs, base, i);
+		}
+		BdoublyLinkedList::Erase();
+		BdoublyLinkedList::Apply();
+		break;
+
+	case id_circular_linked_list:
+		for (short i = 1; i <= BcircularLinkedList::a_size; ++i) {
+			BcircularLinkedList::a[i] = -1000;
+			drawBox(boxs, base, i);
+		}
+		BcircularLinkedList::Erase();
+		BcircularLinkedList::Apply();
+		break;
 	}
 }
 
@@ -110,6 +132,22 @@ void rCreateRandom(short id, wxPanel** boxs, wxPanel* base) {
 			drawBox(boxs, base, i, BsimplyLinkedList::a[i], 1);
 		}
 		BsimplyLinkedList::Reverse();
+		break;
+
+	case id_doubly_linked_list:
+		for (short i = 1; i <= random_size; ++i) {
+			BdoublyLinkedList::addBox(getRandom(1, 69));
+			drawBox(boxs, base, i, BdoublyLinkedList::a[i], 1);
+		}
+		BdoublyLinkedList::Reverse();
+		break;
+
+	case id_circular_linked_list:
+		for (short i = 1; i <= random_size; ++i) {
+			BcircularLinkedList::addBox(getRandom(1, 69));
+			drawBox(boxs, base, i, BcircularLinkedList::a[i], 1);
+		}
+		BcircularLinkedList::Reverse();
 		break;
 	}
 }
@@ -167,6 +205,22 @@ void rStringToBox(short id, std::string& line, wxPanel** boxs, wxPanel* base) {
 		}
 		BsimplyLinkedList::Reverse();
 		break;
+
+	case id_doubly_linked_list:
+		for (short i = 1; i <= sz; ++i) {
+			BdoublyLinkedList::addBox(value[i]);
+			drawBox(boxs, base, i, BdoublyLinkedList::a[i]);
+		}
+		BdoublyLinkedList::Reverse();
+		break;
+
+	case id_circular_linked_list:
+		for (short i = 1; i <= sz; ++i) {
+			BcircularLinkedList::addBox(value[i]);
+			drawBox(boxs, base, i, BcircularLinkedList::a[i]);
+		}
+		BcircularLinkedList::Reverse();
+		break;
 	}
 }
 
@@ -204,6 +258,32 @@ void rInsert(short id, short pos, short val, wxPanel** boxs, wxPanel* base) {
 			drawBox(boxs, base, i, BsimplyLinkedList::a[i], 1);
 		}
 		break;
+
+	case id_doubly_linked_list:
+		++pos;
+		if (BdoublyLinkedList::insertPosition(pos, val) == false) {
+			showError("The maximum number of element you can have is 12");
+			return;
+		}
+
+		for (short i = 1; i <= BdoublyLinkedList::a_size; ++i) {
+			drawBox(boxs, base, i);
+			drawBox(boxs, base, i, BdoublyLinkedList::a[i], 1);
+		}
+		break;
+
+	case id_circular_linked_list:
+		++pos;
+		if (BcircularLinkedList::insertPosition(pos, val) == false) {
+			showError("The maximum number of element you can have is 12");
+			return;
+		}
+
+		for (short i = 1; i <= BcircularLinkedList::a_size; ++i) {
+			drawBox(boxs, base, i);
+			drawBox(boxs, base, i, BcircularLinkedList::a[i], 1);
+		}
+		break;
 	}
 }
 
@@ -239,6 +319,28 @@ void rDelete(short id, short pos, wxPanel** boxs, wxPanel* base) {
 			drawBox(boxs, base, i, BsimplyLinkedList::a[i], 1);
 		}
 		break;
+
+	case id_doubly_linked_list:
+		++pos;
+		for (short i = 1; i <= BdoublyLinkedList::a_size; ++i) {
+			drawBox(boxs, base, i);
+		}
+		BdoublyLinkedList::deletePosition(pos);
+		for (short i = 1; i <= BdoublyLinkedList::a_size; ++i) {
+			drawBox(boxs, base, i, BdoublyLinkedList::a[i], 1);
+		}
+		break;
+
+	case id_circular_linked_list:
+		++pos;
+		for (short i = 1; i <= BcircularLinkedList::a_size; ++i) {
+			drawBox(boxs, base, i);
+		}
+		BcircularLinkedList::deletePosition(pos);
+		for (short i = 1; i <= BcircularLinkedList::a_size; ++i) {
+			drawBox(boxs, base, i, BcircularLinkedList::a[i], 1);
+		}
+		break;
 	}
 }
 
@@ -267,6 +369,22 @@ void rUpdate(short id, short pos, short val, wxPanel** boxs, wxPanel* base) {
 		drawBox(boxs, base, pos);
 		drawBox(boxs, base, pos, BsimplyLinkedList::a[pos], 1);
 		break;
+
+	case id_doubly_linked_list:
+		++pos;
+		BdoublyLinkedList::Update(pos, val);
+		BdoublyLinkedList::Apply();
+		drawBox(boxs, base, pos);
+		drawBox(boxs, base, pos, BdoublyLinkedList::a[pos], 1);
+		break;
+
+	case id_circular_linked_list:
+		++pos;
+		BcircularLinkedList::Update(pos, val);
+		BcircularLinkedList::Apply();
+		drawBox(boxs, base, pos);
+		drawBox(boxs, base, pos, BcircularLinkedList::a[pos], 1);
+		break;
 	}
 }
 
@@ -292,6 +410,14 @@ short rSearch(short id, short val) {
 
 	case id_simply_linked_list:
 		return BsimplyLinkedList::Search(val);
+		break;
+
+	case id_doubly_linked_list:
+		return BdoublyLinkedList::Search(val);
+		break;
+
+	case id_circular_linked_list:
+		return BcircularLinkedList::Search(val);
 		break;
 	}
 
@@ -349,6 +475,28 @@ bool rNext(short id, wxPanel** boxs, wxPanel* base, wxStaticBitmap* arrow) {
 		}
 
 		break;
+
+	case id_doubly_linked_list:
+		signal = BdoublyLinkedList::next();
+
+		drawArrow(arrow, BdoublyLinkedList::current);
+
+		if (signal == true) {
+			return true;
+		}
+
+		break;
+
+	case id_circular_linked_list:
+		signal = BcircularLinkedList::next();
+
+		drawArrow(arrow, BcircularLinkedList::current);
+
+		if (signal == true) {
+			return true;
+		}
+
+		break;
 	}
 }
 
@@ -373,6 +521,18 @@ void rInsertSbs(short id, short pos, short val, wxStaticBitmap* arrow) {
 		BsimplyLinkedList::setup(pos, val, 1);
 		drawArrow(arrow, BsimplyLinkedList::current);
 		break;
+
+	case id_doubly_linked_list:
+		++pos;
+		BdoublyLinkedList::setup(pos, val, 1);
+		drawArrow(arrow, BdoublyLinkedList::current);
+		break;
+
+	case id_circular_linked_list:
+		++pos;
+		BcircularLinkedList::setup(pos, val, 1);
+		drawArrow(arrow, BcircularLinkedList::current);
+		break;
 	}
 }
 
@@ -396,6 +556,18 @@ void rDeleteSbs(short id, short pos, wxStaticBitmap* arrow) {
 		BsimplyLinkedList::setup(pos, 0, 2);
 		drawArrow(arrow, BsimplyLinkedList::current);
 		break;
+
+	case id_doubly_linked_list:
+		++pos;
+		BdoublyLinkedList::setup(pos, 0, 2);
+		drawArrow(arrow, BdoublyLinkedList::current);
+		break;
+
+	case id_circular_linked_list:
+		++pos;
+		BcircularLinkedList::setup(pos, 0, 2);
+		drawArrow(arrow, BcircularLinkedList::current);
+		break;
 	}
 }
 
@@ -418,6 +590,18 @@ void rUpdateSbs(short id, short pos, short val, wxStaticBitmap* arrow) {
 		++pos;
 		BsimplyLinkedList::setup(pos, val, 3);
 		drawArrow(arrow, BsimplyLinkedList::current);
+		break;
+
+	case id_doubly_linked_list:
+		++pos;
+		BdoublyLinkedList::setup(pos, val, 3);
+		drawArrow(arrow, BdoublyLinkedList::current);
+		break;
+
+	case id_circular_linked_list:
+		++pos;
+		BcircularLinkedList::setup(pos, val, 3);
+		drawArrow(arrow, BcircularLinkedList::current);
 		break;
 	}
 }
@@ -443,6 +627,18 @@ void rAccessSbs(short id, short pos, wxStaticBitmap* arrow) {
 		BsimplyLinkedList::setup(pos, 0, 4);
 		drawArrow(arrow, BsimplyLinkedList::current);
 		break;
+
+	case id_doubly_linked_list:
+		++pos;
+		BdoublyLinkedList::setup(pos, 0, 4);
+		drawArrow(arrow, BdoublyLinkedList::current);
+		break;
+
+	case id_circular_linked_list:
+		++pos;
+		BcircularLinkedList::setup(pos, 0, 4);
+		drawArrow(arrow, BcircularLinkedList::current);
+		break;
 	}
 }
 
@@ -463,6 +659,16 @@ void rSearchSbs(short id, short val, wxStaticBitmap* arrow) {
 		BsimplyLinkedList::setup(0, val, 5);
 		drawArrow(arrow, BsimplyLinkedList::current);
 		break;
+
+	case id_doubly_linked_list:
+		BdoublyLinkedList::setup(0, val, 5);
+		drawArrow(arrow, BdoublyLinkedList::current);
+		break;
+
+	case id_circular_linked_list:
+		BcircularLinkedList::setup(0, val, 5);
+		drawArrow(arrow, BcircularLinkedList::current);
+		break;
 	}
 }
 
@@ -479,6 +685,14 @@ int rBoxSize(short id) {
 
 	case id_simply_linked_list:
 		return BsimplyLinkedList::Size();
+		break;
+
+	case id_doubly_linked_list:
+		return BdoublyLinkedList::Size();
+		break;
+
+	case id_circular_linked_list:
+		return BcircularLinkedList::Size();
 		break;
 	}
 
@@ -511,6 +725,22 @@ int rAtBox(short id, short pos) {
 
 		return BsimplyLinkedList::Value(pos);
 		break;
+
+	case id_doubly_linked_list:
+		if (pos > BdoublyLinkedList::a_size) {
+			return -1000;
+		}
+
+		return BdoublyLinkedList::Value(pos);
+		break;
+
+	case id_circular_linked_list:
+		if (pos > BcircularLinkedList::a_size) {
+			return -1000;
+		}
+
+		return BcircularLinkedList::Value(pos);
+		break;
 	}
 
 	return -1000;
@@ -529,6 +759,14 @@ short rSbsMode(short id) {
 
 	case id_simply_linked_list:
 		return BsimplyLinkedList::mode;
+		break;
+
+	case id_doubly_linked_list:
+		return BdoublyLinkedList::mode;
+		break;
+
+	case id_circular_linked_list:
+		return BcircularLinkedList::mode;
 		break;
 	}
 

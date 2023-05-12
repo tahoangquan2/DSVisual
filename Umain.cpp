@@ -5,6 +5,8 @@
 #include "UstaticArray.h"
 #include "UdynamicArray.h"
 #include "UsimplyLinkedList.h"
+#include "UdoublyLinkedList.h"
+#include "UcircularLinkedList.h"
 
 // UI for the main frame
 Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
@@ -32,13 +34,25 @@ Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 	u_simply_linked_list->SetSize(size1, size2);
 	u_simply_linked_list->Hide();
 
+	UdoublyLinkedList* u_doubly_linked_list = new UdoublyLinkedList(base);
+	u_doubly_linked_list->SetSize(size1, size2);
+	u_doubly_linked_list->Hide();
+
+	UcircularLinkedList* u_circular_linked_list = new UcircularLinkedList(base);
+	u_circular_linked_list->SetSize(size1, size2);
+	u_circular_linked_list->Hide();
+
 	u_setting->parent = u_menu;
 	u_static_array->parent = u_menu;
 	u_dynamic_array->parent = u_menu;
 	u_simply_linked_list->parent = u_menu;
+	u_doubly_linked_list->parent = u_menu;
+	u_circular_linked_list->parent = u_menu;
 	u_menu->parent_setting = u_setting;
 	u_menu->parent_static_array = u_static_array;
 	u_menu->parent_dynamic_array = u_dynamic_array;
 	u_menu->parent_simply_linked_list = u_simply_linked_list;
+	u_menu->parent_doubly_linked_list = u_doubly_linked_list;
+	u_menu->parent_circular_linked_list = u_circular_linked_list;
 
 }

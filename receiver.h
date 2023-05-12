@@ -1,6 +1,6 @@
 #include "constant.h"
 
-// receive every signal from UI to the backend
+// receive every signal from UI and translate to the backend
 
 // for receiver
 void showError(wxString message);

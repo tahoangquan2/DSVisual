@@ -572,7 +572,7 @@ void UcircularLinkedList::nextStep(wxCommandEvent& e) {
 	}
 }
 
-// skipp all the steps in the step by step mode
+// skip all the steps in the step by step mode
 void UcircularLinkedList::skipStep(wxCommandEvent& e) {
 	if (during_sbs == false) {
 		return;

@@ -8,13 +8,13 @@ Umenu::Umenu(wxPanel* parent) : wxPanel(parent) {
 	srand(time(NULL));
 
 	//wxButton* button_to_setting = new wxButton(base, wxID_ANY, "Setting", wxPoint(100, 50), wxSize(200, 50));
-	wxButton* button_to_static_array = new wxButton(base, wxID_ANY, "Static Array", wxPoint(100, 100), wxSize(200, 50));
-	wxButton* button_to_dynamic_array = new wxButton(base, wxID_ANY, "Dynamic Array", wxPoint(100, 150), wxSize(200, 50));
-	wxButton* button_to_simply_linked_list = new wxButton(base, wxID_ANY, "Simply Linked List", wxPoint(100, 200), wxSize(200, 50));
-	wxButton* button_to_doubly_linked_list = new wxButton(base, wxID_ANY, "Doubly Linked List", wxPoint(100, 250), wxSize(200, 50));
-	wxButton* button_to_circular_linked_list = new wxButton(base, wxID_ANY, "Circular Linked List", wxPoint(100, 300), wxSize(200, 50));
-	wxButton* button_to_stack = new wxButton(base, wxID_ANY, "Stack", wxPoint(100, 350), wxSize(200, 50));
-	wxButton* button_to_queue = new wxButton(base, wxID_ANY, "Queue", wxPoint(100, 400), wxSize(200, 50));
+	wxButton* button_to_static_array = new wxButton(base, wxID_ANY, "Static Array", wxPoint(150, 120), wxSize(200, 50));
+	wxButton* button_to_dynamic_array = new wxButton(base, wxID_ANY, "Dynamic Array", wxPoint(150, 180), wxSize(200, 50));
+	wxButton* button_to_simply_linked_list = new wxButton(base, wxID_ANY, "Simply Linked List", wxPoint(150, 240), wxSize(200, 50));
+	wxButton* button_to_doubly_linked_list = new wxButton(base, wxID_ANY, "Doubly Linked List", wxPoint(150, 300), wxSize(200, 50));
+	wxButton* button_to_circular_linked_list = new wxButton(base, wxID_ANY, "Circular Linked List", wxPoint(150, 360), wxSize(200, 50));
+	wxButton* button_to_stack = new wxButton(base, wxID_ANY, "Stack", wxPoint(150, 420), wxSize(200, 50));
+	wxButton* button_to_queue = new wxButton(base, wxID_ANY, "Queue", wxPoint(150, 480), wxSize(200, 50));
 
 	//button_to_setting->Bind(wxEVT_BUTTON, &Umenu::toSetting, this);
 	button_to_static_array->Bind(wxEVT_BUTTON, &Umenu::toStaticArray, this);

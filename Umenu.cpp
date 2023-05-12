@@ -13,6 +13,8 @@ Umenu::Umenu(wxPanel* parent) : wxPanel(parent) {
 	wxButton* button_to_simply_linked_list = new wxButton(base, wxID_ANY, "Simply Linked List", wxPoint(100, 200), wxSize(200, 50));
 	wxButton* button_to_doubly_linked_list = new wxButton(base, wxID_ANY, "Doubly Linked List", wxPoint(100, 250), wxSize(200, 50));
 	wxButton* button_to_circular_linked_list = new wxButton(base, wxID_ANY, "Circular Linked List", wxPoint(100, 300), wxSize(200, 50));
+	wxButton* button_to_stack = new wxButton(base, wxID_ANY, "Stack", wxPoint(100, 350), wxSize(200, 50));
+	wxButton* button_to_queue = new wxButton(base, wxID_ANY, "Queue", wxPoint(100, 400), wxSize(200, 50));
 
 	//button_to_setting->Bind(wxEVT_BUTTON, &Umenu::toSetting, this);
 	button_to_static_array->Bind(wxEVT_BUTTON, &Umenu::toStaticArray, this);
@@ -20,6 +22,8 @@ Umenu::Umenu(wxPanel* parent) : wxPanel(parent) {
 	button_to_simply_linked_list->Bind(wxEVT_BUTTON, &Umenu::toSimplyLinkedList, this);
 	button_to_doubly_linked_list->Bind(wxEVT_BUTTON, &Umenu::toDoublyLinkedList, this);
 	button_to_circular_linked_list->Bind(wxEVT_BUTTON, &Umenu::toCircularLinkedList, this);
+	button_to_stack->Bind(wxEVT_BUTTON, &Umenu::toStack, this);
+	button_to_queue->Bind(wxEVT_BUTTON, &Umenu::toQueue, this);
 }
 
 // go to setting
@@ -50,4 +54,14 @@ void Umenu::toDoublyLinkedList(wxCommandEvent& e) {
 // go to circular linked list
 void Umenu::toCircularLinkedList(wxCommandEvent& e) {
 	rGoToPanel(this, parent_circular_linked_list);
+}
+
+// go to stack
+void Umenu::toStack(wxCommandEvent& e) {
+	rGoToPanel(this, parent_stack);
+}
+
+// go to queue
+void Umenu::toQueue(wxCommandEvent& e) {
+	rGoToPanel(this, parent_queue);
 }

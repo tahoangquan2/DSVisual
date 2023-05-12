@@ -11,6 +11,8 @@ public:
 	wxPanel* parent_simply_linked_list = nullptr;
 	wxPanel* parent_doubly_linked_list = nullptr;
 	wxPanel* parent_circular_linked_list = nullptr;
+	wxPanel* parent_stack = nullptr;
+	wxPanel* parent_queue = nullptr;
 
 	Umenu(wxPanel* parent);
 	void toSetting(wxCommandEvent& e);
@@ -19,5 +21,7 @@ public:
 	void toSimplyLinkedList(wxCommandEvent& e);
 	void toDoublyLinkedList(wxCommandEvent& e);
 	void toCircularLinkedList(wxCommandEvent& e);
+	void toStack(wxCommandEvent& e);
+	void toQueue(wxCommandEvent& e);
 
 };

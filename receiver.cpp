@@ -5,12 +5,16 @@
 #include "UsimplyLinkedList.h"
 #include "UdoublyLinkedList.h"
 #include "UcircularLinkedList.h"
+#include "Ustack.h"
+#include "Uqueue.h"
 
 #include "BstaticArray.h"
 #include "BdynamicArray.h"
 #include "BsimplyLinkedList.h"
 #include "BdoublyLinkedList.h"
 #include "BcircularLinkedList.h"
+#include "Bstack.h"
+#include "Bqueue.h"
 
 // get a random number in range [l, r]
 int getRandom(int l, int r) {
@@ -103,6 +107,24 @@ void rClear(short id, wxPanel** boxs, wxPanel* base) {
 		BcircularLinkedList::Erase();
 		BcircularLinkedList::Apply();
 		break;
+
+	case id_stack:
+		for (short i = 1; i <= Bstack::a_size; ++i) {
+			Bstack::a[i] = -1000;
+			drawBox(boxs, base, i);
+		}
+		Bstack::Erase();
+		Bstack::Apply();
+		break;
+
+	case id_queue:
+		for (short i = 1; i <= Bqueue::a_size; ++i) {
+			Bqueue::a[i] = -1000;
+			drawBox(boxs, base, i);
+		}
+		Bqueue::Erase();
+		Bqueue::Apply();
+		break;
 	}
 }
 
@@ -148,6 +170,22 @@ void rCreateRandom(short id, wxPanel** boxs, wxPanel* base) {
 			drawBox(boxs, base, i, BcircularLinkedList::a[i], 1);
 		}
 		BcircularLinkedList::Reverse();
+		break;
+
+	case id_stack:
+		for (short i = 1; i <= random_size; ++i) {
+			Bstack::addBox(getRandom(1, 69));
+			drawBox(boxs, base, i, Bstack::a[i], 1);
+		}
+		Bstack::Reverse();
+		break;
+
+	case id_queue:
+		for (short i = 1; i <= random_size; ++i) {
+			Bqueue::addBox(getRandom(1, 69));
+			drawBox(boxs, base, i, Bqueue::a[i], 1);
+		}
+		Bqueue::Reverse();
 		break;
 	}
 }
@@ -221,6 +259,22 @@ void rStringToBox(short id, std::string& line, wxPanel** boxs, wxPanel* base) {
 		}
 		BcircularLinkedList::Reverse();
 		break;
+
+	case id_stack:
+		for (short i = 1; i <= sz; ++i) {
+			Bstack::addBox(value[i]);
+			drawBox(boxs, base, i, Bstack::a[i]);
+		}
+		Bstack::Reverse();
+		break;
+
+	case id_queue:
+		for (short i = 1; i <= sz; ++i) {
+			Bqueue::addBox(value[i]);
+			drawBox(boxs, base, i, Bqueue::a[i]);
+		}
+		Bqueue::Reverse();
+		break;
 	}
 }
 
@@ -284,6 +338,30 @@ void rInsert(short id, short pos, short val, wxPanel** boxs, wxPanel* base) {
 			drawBox(boxs, base, i, BcircularLinkedList::a[i], 1);
 		}
 		break;
+
+	case id_stack:
+		if (Bstack::insertPosition(pos, val) == false) {
+			showError("The maximum number of element you can have is 12");
+			return;
+		}
+
+		for (short i = 1; i <= Bstack::a_size; ++i) {
+			drawBox(boxs, base, i);
+			drawBox(boxs, base, i, Bstack::a[i], 1);
+		}
+		break;
+
+	case id_queue:
+		if (Bqueue::insertPosition(pos, val) == false) {
+			showError("The maximum number of element you can have is 12");
+			return;
+		}
+
+		for (short i = 1; i <= Bqueue::a_size; ++i) {
+			drawBox(boxs, base, i);
+			drawBox(boxs, base, i, Bqueue::a[i], 1);
+		}
+		break;
 	}
 }
 
@@ -339,6 +417,26 @@ void rDelete(short id, short pos, wxPanel** boxs, wxPanel* base) {
 		BcircularLinkedList::deletePosition(pos);
 		for (short i = 1; i <= BcircularLinkedList::a_size; ++i) {
 			drawBox(boxs, base, i, BcircularLinkedList::a[i], 1);
+		}
+		break;
+
+	case id_stack:
+		for (short i = 1; i <= Bstack::a_size; ++i) {
+			drawBox(boxs, base, i);
+		}
+		Bstack::deletePosition(pos);
+		for (short i = 1; i <= Bstack::a_size; ++i) {
+			drawBox(boxs, base, i, Bstack::a[i], 1);
+		}
+		break;
+
+	case id_queue:
+		for (short i = 1; i <= Bqueue::a_size; ++i) {
+			drawBox(boxs, base, i);
+		}
+		Bqueue::deletePosition(pos);
+		for (short i = 1; i <= Bqueue::a_size; ++i) {
+			drawBox(boxs, base, i, Bqueue::a[i], 1);
 		}
 		break;
 	}
@@ -694,6 +792,14 @@ int rBoxSize(short id) {
 	case id_circular_linked_list:
 		return BcircularLinkedList::Size();
 		break;
+
+	case id_stack:
+		return Bstack::Size();
+		break;
+
+	case id_queue:
+		return Bqueue::Size();
+		break;
 	}
 
 	return 0;
@@ -740,6 +846,22 @@ int rAtBox(short id, short pos) {
 		}
 
 		return BcircularLinkedList::Value(pos);
+		break;
+
+	case id_stack:
+		if (pos > Bstack::a_size) {
+			return -1000;
+		}
+
+		return Bstack::Value(pos);
+		break;
+
+	case id_queue:
+		if (pos > Bqueue::a_size) {
+			return -1000;
+		}
+
+		return Bqueue::Value(pos);
 		break;
 	}
 

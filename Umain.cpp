@@ -9,6 +9,7 @@
 #include "UcircularLinkedList.h"
 #include "Ustack.h"
 #include "Uqueue.h"
+#include "Ugraph.h"
 
 // UI for the main frame
 Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
@@ -52,6 +53,10 @@ Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 	u_queue->SetSize(size1, size2);
 	u_queue->Hide();
 
+	Ugraph* u_graph = new Ugraph(base);
+	u_graph->SetSize(size1, size2);
+	u_graph->Hide();
+
 	u_setting->parent = u_menu;
 	u_static_array->parent = u_menu;
 	u_dynamic_array->parent = u_menu;
@@ -60,6 +65,7 @@ Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 	u_circular_linked_list->parent = u_menu;
 	u_stack->parent = u_menu;
 	u_queue->parent = u_menu;
+	u_graph->parent = u_menu;
 	u_menu->parent_setting = u_setting;
 	u_menu->parent_static_array = u_static_array;
 	u_menu->parent_dynamic_array = u_dynamic_array;
@@ -68,5 +74,6 @@ Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 	u_menu->parent_circular_linked_list = u_circular_linked_list;
 	u_menu->parent_stack = u_stack;
 	u_menu->parent_queue = u_queue;
+	u_menu->parent_graph = u_graph;
 
 }

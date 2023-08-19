@@ -8,6 +8,8 @@
 #include "Ustack.h"
 #include "Uqueue.h"
 
+#include "Ugraph.h"
+
 #include "BstaticArray.h"
 #include "BdynamicArray.h"
 #include "BsimplyLinkedList.h"

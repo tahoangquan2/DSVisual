@@ -13,6 +13,7 @@ public:
 	wxPanel* parent_circular_linked_list = nullptr;
 	wxPanel* parent_stack = nullptr;
 	wxPanel* parent_queue = nullptr;
+	wxPanel* parent_graph = nullptr;
 
 	Umenu(wxPanel* parent);
 	void toSetting(wxCommandEvent& e);
@@ -23,5 +24,6 @@ public:
 	void toCircularLinkedList(wxCommandEvent& e);
 	void toStack(wxCommandEvent& e);
 	void toQueue(wxCommandEvent& e);
+	void toGraph(wxCommandEvent& e);
 
 };

@@ -16,6 +16,8 @@ Umenu::Umenu(wxPanel* parent) : wxPanel(parent) {
 	wxButton* button_to_stack = new wxButton(base, wxID_ANY, "Stack", wxPoint(150, 420), wxSize(200, 50));
 	wxButton* button_to_queue = new wxButton(base, wxID_ANY, "Queue", wxPoint(150, 480), wxSize(200, 50));
 
+	wxButton* button_to_graph = new wxButton(base, wxID_ANY, "Graph", wxPoint(400, 120), wxSize(200, 50));
+
 	//button_to_setting->Bind(wxEVT_BUTTON, &Umenu::toSetting, this);
 	button_to_static_array->Bind(wxEVT_BUTTON, &Umenu::toStaticArray, this);
 	button_to_dynamic_array->Bind(wxEVT_BUTTON, &Umenu::toDynamicArray, this);
@@ -24,6 +26,8 @@ Umenu::Umenu(wxPanel* parent) : wxPanel(parent) {
 	button_to_circular_linked_list->Bind(wxEVT_BUTTON, &Umenu::toCircularLinkedList, this);
 	button_to_stack->Bind(wxEVT_BUTTON, &Umenu::toStack, this);
 	button_to_queue->Bind(wxEVT_BUTTON, &Umenu::toQueue, this);
+
+	button_to_graph->Bind(wxEVT_BUTTON, &Umenu::toGraph, this);
 }
 
 // go to setting
@@ -64,4 +68,9 @@ void Umenu::toStack(wxCommandEvent& e) {
 // go to queue
 void Umenu::toQueue(wxCommandEvent& e) {
 	rGoToPanel(this, parent_queue);
+}
+
+// go to graph
+void Umenu::toGraph(wxCommandEvent& e) {
+	rGoToPanel(this, parent_graph);
 }

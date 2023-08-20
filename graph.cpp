@@ -3,8 +3,6 @@
 
 // main page for UI queue
 graph::graph(wxPanel* parent) : wxPanel(parent) {
-	//base->SetSize(size1, size2);
-
 	wxButton* button_back = new wxButton(this, wxID_ANY, "Go back", wxPoint(10, 10), wxSize(100, 25));
 	SetCursor(wxCursor(wxCURSOR_HAND));
 
@@ -14,53 +12,89 @@ graph::graph(wxPanel* parent) : wxPanel(parent) {
 	Bind(wxEVT_PAINT, &graph::onPaint, this);
 
 	button_back->Bind(wxEVT_BUTTON, &graph::goBack, this);
+	randomGraph();
 }
 
 // go back to menu
 void graph::goBack(wxCommandEvent& e) {
+	randomGraph();
 	rGoToPanel(this, parent);
 }
 
-void graph::onLeftDown(wxMouseEvent& e)
-{
-	wxRect circle1Rect(m_Circle1Pos.x - 10, m_Circle1Pos.y - 10, 20, 20);
-	wxRect circle2Rect(m_Circle2Pos.x - 10, m_Circle2Pos.y - 10, 20, 20);
-
-	if (circle1Rect.Contains(e.GetPosition()))
-		m_IsDraggingCircle1 = true;
-	else if (circle2Rect.Contains(e.GetPosition()))
-		m_IsDraggingCircle2 = true;
-}
-
-void graph::onLeftUp(wxMouseEvent& e)
-{
-	m_IsDraggingCircle1 = false;
-	m_IsDraggingCircle2 = false;
-}
-
-void graph::onMouseMove(wxMouseEvent& e) {
-	if (m_IsDraggingCircle1 == true || m_IsDraggingCircle2 == true) {
-		m_MousePos = e.GetPosition();
-
-		if (m_IsDraggingCircle1) {
-			m_Circle1Pos = m_MousePos;
+// create a random graph
+void graph::randomGraph() {
+	n = getRandom(3, 12);
+	m = getRandom(2, std::min((n * (n - 1)) >> 1, 20));
+	for (short i = 1; i <= n; ++i) {
+		V[i] = std::make_pair(getRandom(100, 700), getRandom(100, 500));
+		T[i] = i;
+		for (short j = 0; j < 3; ++j) {
+			cv[j][i] = black[j];
 		}
-		else if (m_IsDraggingCircle2) {
-			m_Circle2Pos = m_MousePos;
+	}
+	for (short i = 1; i <= m; ++i) {
+		short x, y;
+		do {
+			x = getRandom(1, n);
+			y = getRandom(1, n);
+		} while (x == y);
+		E[i] = std::make_pair(x, y);
+		W[i] = 1;
+		for (short j = 0; j < 3; ++j) {
+			ce[j][i] = black[j];
 		}
-
-		Refresh();
 	}
 }
 
-void graph::onPaint(wxPaintEvent& e)
-{
+void graph::onLeftDown(wxMouseEvent& e) {
+	for (short i = 1; i <= n; ++i) {
+		wxRect insideRect(V[i].first - rad, V[i].second - rad, rad << 2, rad << 2);
+		if (insideRect.Contains(e.GetPosition())) {
+			drag[i] = true;
+			break;
+		}
+	}
+}
+
+void graph::onLeftUp(wxMouseEvent& e) {
+	for (short i = 1; i <= n; ++i) {
+		drag[i] = false;
+	}
+}
+
+void graph::onMouseMove(wxMouseEvent& e) {
+	for (short i = 1; i <= n; ++i) {
+		if (drag[i] == true) {
+			mouse_pos = e.GetPosition();
+			V[i].first = mouse_pos.x;
+			V[i].second = mouse_pos.y;
+			Refresh();
+			break;
+		}
+	}
+}
+
+void graph::onPaint(wxPaintEvent& e) {
 	wxAutoBufferedPaintDC dc(this);
 	dc.Clear();
-	dc.SetPen(wxPen(*wxBLACK, 1));
+	
+	// draw edge
+	for (short i = 1; i <= m; ++i) {
+		dc.SetPen(wxPen(wxColour(ce[0][i], ce[1][i], ce[2][i]), 1));
+		dc.DrawLine(wxPoint(V[E[i].first].first, V[E[i].first].second), wxPoint(V[E[i].second].first, V[E[i].second].second));
+		if (W[i] != 1) {
+			wxString text = "";
+			text << W[i];
+			dc.DrawText(text, wxPoint((V[E[i].first].first + V[E[i].second].first) / 2.0, (V[E[i].first].second + V[E[i].second].second) / 2.0));
+		}
+	}
 
-	wxCoord x1 = m_Circle1Pos.x, y1 = m_Circle1Pos.y, x2 = m_Circle2Pos.x, y2 = m_Circle2Pos.y;
-	dc.DrawLine(x1, y1, x2, y2);
-	dc.DrawCircle(x1, y1, 20);
-	dc.DrawCircle(x2, y2, 20);
+	// draw vertex
+	for (short i = 1; i <= n; ++i) {
+		dc.SetPen(wxPen(wxColour(cv[0][i], cv[1][i], cv[2][i]), 1));
+		dc.DrawCircle(wxPoint(V[i].first, V[i].second), rad);
+		wxString text = "";
+		text << T[i];
+		dc.DrawText(text, wxPoint(V[i].first - 4, V[i].second - 6));
+	}
 }

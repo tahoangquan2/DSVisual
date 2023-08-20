@@ -3,6 +3,7 @@
 // receive every signal from UI and translate to the backend
 
 // for receiver
+short getRandom(short l, short r);
 void showError(wxString message);
 void drawBox(wxPanel** boxs, wxPanel* base, short pos, short val, short mode);
 void drawArrow(wxStaticBitmap* arrow, short pos);
@@ -22,6 +23,6 @@ void rDeleteSbs(short id, short pos, wxStaticBitmap* arrow);
 void rUpdateSbs(short id, short pos, short val, wxStaticBitmap* arrow);
 void rAccessSbs(short id, short pos, wxStaticBitmap* arrow);
 void rSearchSbs(short id, short val, wxStaticBitmap* arrow);
-int rBoxSize(short id);
-int rAtBox(short id, short pos);
+short rBoxSize(short id);
+short rAtBox(short id, short pos);
 short rSbsMode(short id);

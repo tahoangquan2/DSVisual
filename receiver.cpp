@@ -17,7 +17,7 @@
 #include "Bqueue.h"
 
 // get a random number in range [l, r]
-int getRandom(int l, int r) {
+short getRandom(short l, short r) {
 	return (rand() % (r - l + 1)) + l;
 }
 
@@ -192,7 +192,7 @@ void rCreateRandom(short id, wxPanel** boxs, wxPanel* base) {
 
 // change the string input from file to a readable value for backend
 void rStringToBox(short id, std::string& line, wxPanel** boxs, wxPanel* base) {
-	int value[15] = {};
+	short value[15] = {};
 	short sz = 0;
 
 	if (line.size() > 60) {
@@ -200,7 +200,7 @@ void rStringToBox(short id, std::string& line, wxPanel** boxs, wxPanel* base) {
 		return;
 	}
 
-	for (int i = 0; i < line.size(); ++i) {
+	for (short i = 0; i < line.size(); ++i) {
 		if (line[i] == ',') {
 			++sz;
 			if (sz > 12) {
@@ -208,7 +208,7 @@ void rStringToBox(short id, std::string& line, wxPanel** boxs, wxPanel* base) {
 			}
 		}
 		else if ('0' <= line[i] && line[i] <= '9') {
-			value[sz] = value[sz] * 10 + int(line[i]) - int('0');
+			value[sz] = value[sz] * 10 + short(line[i]) - short('0');
 			if (value[sz] < -999 || value[sz] > 999) {
 				showError("Value must be in range [-999, 999]");
 				return;
@@ -771,7 +771,7 @@ void rSearchSbs(short id, short val, wxStaticBitmap* arrow) {
 }
 
 // return the current array size
-int rBoxSize(short id) {
+short rBoxSize(short id) {
 	switch (id) {
 	case id_static_array:
 		return BstaticArray::a_size;
@@ -806,7 +806,7 @@ int rBoxSize(short id) {
 }
 
 // return the value of the array
-int rAtBox(short id, short pos) {
+short rAtBox(short id, short pos) {
 	switch (id) {
 	case id_static_array:
 		if (pos > BstaticArray::a_size) {

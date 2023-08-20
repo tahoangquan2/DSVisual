@@ -16,11 +16,15 @@ const short id_circular_linked_list = 5;
 const short id_stack = 6;
 const short id_queue = 7;
 
-const int size1 = 1090;
-const int size2 = 690;
+const short size1 = 1090;
+const short size2 = 690;
 
 const short max_size = 12;
 const short box_position[14] = {25, 100, 175, 250, 325, 400, 475, 550, 625, 700, 775, 850, 925, 1000};
-const int box_y = 220;
-const int box_size = 50;
-const int box_color = 225;
+const short box_y = 220;
+const short box_size = 50;
+const short box_color = 225;
+
+const short rad = 20;
+
+const short black[3] = {0, 0, 0};

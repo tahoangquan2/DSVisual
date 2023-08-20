@@ -4,6 +4,7 @@
 #include <list>
 
 #include "graphicobject.h"
+#include "graphicobject2.h"
 
 wxDECLARE_EVENT(CANVAS_RECT_ADDED, wxCommandEvent);
 wxDECLARE_EVENT(CANVAS_RECT_REMOVED, wxCommandEvent);
@@ -19,6 +20,7 @@ public:
 	int getObjectCount() { return objectList.size(); }
 
 	void OnPaint(wxPaintEvent& evt);
+	void OnPaint2(wxPaintEvent& evt);
 	void OnMouseDown(wxMouseEvent& event);
 	void OnMouseMove(wxMouseEvent& event);
 	void OnMouseUp(wxMouseEvent& event);

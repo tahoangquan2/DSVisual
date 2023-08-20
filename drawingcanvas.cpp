@@ -2,6 +2,8 @@
 #include <wx/graphics.h>
 #include <wx/dcbuffer.h>
 #include <iostream>
+#include <vector>
+#include <utility>
 
 wxDEFINE_EVENT(CANVAS_RECT_ADDED, wxCommandEvent);
 wxDEFINE_EVENT(CANVAS_RECT_REMOVED, wxCommandEvent);
@@ -16,9 +18,8 @@ DrawingCanvas::DrawingCanvas(wxWindow* parent, wxWindowID id, const wxPoint& pos
 	this->Bind(wxEVT_LEFT_UP, &DrawingCanvas::OnMouseUp, this);
 	this->Bind(wxEVT_LEAVE_WINDOW, &DrawingCanvas::OnMouseLeave, this);
 
-	addRect(this->FromDIP(100), this->FromDIP(80), this->FromDIP(210), this->FromDIP(140), 0, *wxRED, "Rect #1");
-	addRect(this->FromDIP(130), this->FromDIP(110), this->FromDIP(280), this->FromDIP(210), M_PI / 3.0, *wxBLUE, "Rect #2");
-	addRect(this->FromDIP(110), this->FromDIP(110), this->FromDIP(300), this->FromDIP(120), -M_PI / 4.0, wxColor(255, 0, 255, 128), "Rect #3");
+	addRect(this->FromDIP(100), this->FromDIP(80), this->FromDIP(210), this->FromDIP(140), 0, *wxRED, "210");
+	addRect(this->FromDIP(130), this->FromDIP(110), this->FromDIP(280), this->FromDIP(210), M_PI / 3.0, *wxBLUE, "280");
 
 	this->draggedObj = nullptr;
 	this->shouldRotate = false;
@@ -59,8 +60,7 @@ void DrawingCanvas::removeTopRect()
 	}
 }
 
-void DrawingCanvas::OnPaint(wxPaintEvent& evt)
-{
+void DrawingCanvas::OnPaint(wxPaintEvent& evt) {
 	// needed for windows
 	wxAutoBufferedPaintDC dc(this);
 	dc.Clear();
@@ -72,7 +72,8 @@ void DrawingCanvas::OnPaint(wxPaintEvent& evt)
 			gc->SetTransform(gc->CreateMatrix(object.transform));
 
 			gc->SetBrush(wxBrush(object.color));
-			gc->DrawRectangle(object.rect.m_x, object.rect.m_y, object.rect.m_width, object.rect.m_height);
+			//gc->DrawRectangle(object.rect.m_x, object.rect.m_y, object.rect.m_width, object.rect.m_height);
+			gc->DrawEllipse(object.rect.m_x, object.rect.m_y, 50, 50);
 
 			gc->SetFont(*wxNORMAL_FONT, *wxWHITE);
 
@@ -83,6 +84,28 @@ void DrawingCanvas::OnPaint(wxPaintEvent& evt)
 		}
 
 		delete gc;
+	}
+
+	wxGraphicsContext* gc2 = wxGraphicsContext::Create(dc);
+
+	if (gc2) {
+		gc2->SetPen(wxPen(wxColour(0, 0, 0), 3));
+
+		int i = 0;
+		for (const auto& object1 : objectList) {
+			int j = 0;
+			for (const auto& object2 : objectList) {
+				if (i >= j) {
+					//continue;
+				}
+				//gc2->StrokeLine(object1.rect.m_x, object1.rect.m_y, object2.rect.m_x, object2.rect.m_y);
+				gc2->StrokeLine(object1.rect.m_x * -2.0, -object1.rect.m_y * -2.0, 500, 500);
+				++j;
+			}
+			++i;
+		}
+
+		delete gc2;
 	}
 }
 

@@ -2,8 +2,11 @@
 #include <wx/wx.h>
 #include <wx/spinctrl.h>
 #include <wx/affinematrix2d.h>
+#include <wx/dcbuffer.h>
 #include <time.h>
 #include <fstream>
+#include <vector>
+#include <math.h>
 
 const short id_static_array = 1;
 const short id_dynamic_array = 2;

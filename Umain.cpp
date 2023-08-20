@@ -9,7 +9,7 @@
 #include "UcircularLinkedList.h"
 #include "Ustack.h"
 #include "Uqueue.h"
-#include "Ugraph.h"
+#include "graph.h"
 
 // UI for the main frame
 Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
@@ -53,7 +53,7 @@ Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 	u_queue->SetSize(size1, size2);
 	u_queue->Hide();
 
-	Ugraph* u_graph = new Ugraph(base);
+	graph* u_graph = new graph(base);
 	u_graph->SetSize(size1, size2);
 	u_graph->Hide();
 

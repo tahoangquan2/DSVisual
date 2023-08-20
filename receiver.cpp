@@ -8,8 +8,6 @@
 #include "Ustack.h"
 #include "Uqueue.h"
 
-#include "Ugraph.h"
-
 #include "BstaticArray.h"
 #include "BdynamicArray.h"
 #include "BsimplyLinkedList.h"
@@ -17,8 +15,6 @@
 #include "BcircularLinkedList.h"
 #include "Bstack.h"
 #include "Bqueue.h"
-
-#include "Bgraph.h"
 
 // get a random number in range [l, r]
 int getRandom(int l, int r) {

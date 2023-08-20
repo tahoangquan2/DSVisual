@@ -18,6 +18,8 @@
 #include "Bstack.h"
 #include "Bqueue.h"
 
+#include "Bgraph.h"
+
 // get a random number in range [l, r]
 int getRandom(int l, int r) {
 	return (rand() % (r - l + 1)) + l;

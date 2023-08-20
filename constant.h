@@ -1,6 +1,7 @@
 #pragma once
 #include <wx/wx.h>
 #include <wx/spinctrl.h>
+#include <wx/affinematrix2d.h>
 #include <time.h>
 #include <fstream>
 

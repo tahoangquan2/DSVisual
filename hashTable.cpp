@@ -85,8 +85,8 @@ void hashTable::importFile(wxCommandEvent& e) {
 				showError("Number of values must be in range [1, 29]");
 				return;
 			}
-			if (line < -999 || 999 < line) {
-				showError("Value must be in range [-999, 999]");
+			if (line < 1 || 999 < line) {
+				showError("Value must be in range [1, 999]");
 				return;
 			}
 			input_value[cnt] = val;
@@ -163,6 +163,8 @@ void hashTable::onPaint(wxPaintEvent& e) {
 	// draw edge
 	for (short i = 1; i < 100; ++i) {
 		if (T[E[i].first] == -1 || T[E[i].second] == -1) {
+			E[i].first = 0;
+			E[i].second = 0;
 			continue;
 		}
 
@@ -205,9 +207,10 @@ void hashTable::resetColor() {
 }
 
 void hashTable::insertValue(wxCommandEvent& e) {
+	resetColor();
 	int val = input_insert->GetValue();
 	inp = val;
-	int modval = (val + 1000) % 100;
+	int modval = val % 100;
 
 	if (sbs_mode == true && during_sbs == false) {
 		id = 1;
@@ -327,12 +330,13 @@ void hashTable::searchValue(wxCommandEvent& e) {
 }
 
 void hashTable::deleteValue(wxCommandEvent& e) {
-	int val = input_search->GetValue();
+	resetColor();
+	int val = input_delete->GetValue();
 	inp = val;
 
 	if (sbs_mode == true && during_sbs == false) {
-		id = 2;
-		sbs_search = 0;
+		id = 3;
+		sbs_delete = 0;
 		during_sbs = true;
 		button_create_random->Hide();
 		button_import_file->Hide();
@@ -346,6 +350,38 @@ void hashTable::deleteValue(wxCommandEvent& e) {
 		input_search->Hide();
 		input_delete->Hide();
 		return;
+	}
+
+	bool tf = false;
+	if (val > 99) {
+		tf = true;
+	}
+	
+	int cnt = 0;
+	for (int i = 1; i < 30; ++i) {
+		if (T[i] > 0 && T[i] % 100 == val % 100) {
+			++cnt;
+		}
+	}
+
+	if (cnt > 2) {
+		for (int i = 1; i < 30; ++i) {
+			if (T[i] > 0 && T[i] == val) {
+				if (tf == false) {
+					tf = true;
+					continue;
+				}
+				T[i] = -1;
+				break;
+			}
+		}
+	}
+	else {
+		for (int i = 1; i < 30; ++i) {
+			if (T[i] > 0 && T[i] % 100 == val % 100) {
+				T[i] = -1;
+			}
+		}
 	}
 
 	Refresh();
@@ -389,7 +425,7 @@ void hashTable::nextStep(wxCommandEvent& e) {
 	if (id == 1) {
 		if (sbs_add_value == 0) {
 			for (int i = 1; i < 30; ++i) {
-				if (T[i] == inp % 100) {
+				if (T[i] > 0 && T[i] == inp % 100) {
 					cv[i][0] = cv[i][1] = 0;
 					cv[i][2] = 200;
 					sbs_add_value = 1;
@@ -429,7 +465,7 @@ void hashTable::nextStep(wxCommandEvent& e) {
 	else if (id == 2) {
 		if (sbs_search == 0) {
 			for (int i = 1; i <= n; ++i) {
-				if (T[i] == inp % 100) {
+				if (T[i] > 0 && T[i] == inp % 100) {
 					cv[i][0] = cv[i][1] = 0;
 					cv[i][2] = 200;
 					sbs_search = i;

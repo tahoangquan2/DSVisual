@@ -26,7 +26,7 @@ public:
 	std::pair<short, short> V[30], E[100];
 	short cv[30][3], ce[100][3], T[30], id;
 	bool drag[30];
-	short sbs_add_value, sbs_search;
+	short sbs_add_value, sbs_search, sbs_delete;
 
 	hashTable(wxPanel* parent);
 

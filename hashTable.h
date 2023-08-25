@@ -12,16 +12,21 @@ public:
 	wxButton* button_create_random = nullptr;
 	wxButton* button_import_file = nullptr;
 	wxButton* button_insert = nullptr;
+	wxButton* button_search = nullptr;
+	wxButton* button_delete = nullptr;
 	wxButton* button_sbs = nullptr;
 	wxButton* button_sbs2 = nullptr;
 	bool sbs_mode = false, during_sbs = false;
 	wxButton* button_next = nullptr;
 	wxButton* button_skip = nullptr;
 	wxStaticText* text_insert = nullptr;
+	wxStaticText* text_search = nullptr;
+	wxStaticText* text_delete = nullptr;
 	short n, m, sz, x, y, z, inp;
 	std::pair<short, short> V[30], E[100];
-	short cv[30][3], ce[100][3], T[30], id, sbs_add_value;
+	short cv[30][3], ce[100][3], T[30], id;
 	bool drag[30];
+	short sbs_add_value, sbs_search;
 
 	hashTable(wxPanel* parent);
 
@@ -35,7 +40,9 @@ public:
 	void reDraw(wxCommandEvent& e);
 
 	void resetColor();
-	void addValue(wxCommandEvent& e);
+	void insertValue(wxCommandEvent& e);
+	void searchValue(wxCommandEvent& e);
+	void deleteValue(wxCommandEvent& e);
 
 	void sbsModeOn(wxCommandEvent& e);
 	void sbsModeOff(wxCommandEvent& e);

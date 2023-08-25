@@ -11,11 +11,17 @@ hashTable::hashTable(wxPanel* parent) : wxPanel(parent) {
 	wxButton* button_back = new wxButton(this, wxID_ANY, "Go back", wxPoint(10, 10), wxSize(100, 25));
 	button_create_random = new wxButton(this, wxID_ANY, "Create Random", wxPoint(850, 60), wxSize(110, 45));
 	button_import_file = new wxButton(this, wxID_ANY, "Import File", wxPoint(850, 120), wxSize(110, 45));
-	button_insert = new wxButton(this, wxID_ANY, "Add Value", wxPoint(850, 180), wxSize(110, 45));
+	button_insert = new wxButton(this, wxID_ANY, "Insert Value", wxPoint(850, 180), wxSize(110, 45));
+	button_search = new wxButton(this, wxID_ANY, "Search Value", wxPoint(850, 290), wxSize(110, 45));
+	button_delete = new wxButton(this, wxID_ANY, "Delete Value", wxPoint(850, 400), wxSize(110, 45));
 
-	text_insert = new wxStaticText(this, wxID_ANY, "Value:", wxPoint(850, 230));
+	text_insert = new wxStaticText(this, wxID_ANY, "Value Insert:", wxPoint(850, 230));
+	text_search = new wxStaticText(this, wxID_ANY, "Value Search:", wxPoint(850, 340));
+	text_delete = new wxStaticText(this, wxID_ANY, "Value Delete:", wxPoint(850, 450));
 
 	input_insert = new wxSpinCtrl(this, wxID_ANY, "", wxPoint(850, 250), wxSize(110, 25), wxSP_WRAP, -999, 999);
+	input_search = new wxSpinCtrl(this, wxID_ANY, "", wxPoint(850, 360), wxSize(110, 25), wxSP_WRAP, -999, 999);
+	input_delete = new wxSpinCtrl(this, wxID_ANY, "", wxPoint(850, 470), wxSize(110, 25), wxSP_WRAP, -999, 999);
 
 	button_size = new wxChoice(this, wxID_ANY, wxPoint(950, 600), wxSize(90, 60), choices_size);
 	button_size->Select(0);
@@ -37,7 +43,9 @@ hashTable::hashTable(wxPanel* parent) : wxPanel(parent) {
 	button_back->Bind(wxEVT_BUTTON, &hashTable::goBack, this);
 	button_create_random->Bind(wxEVT_BUTTON, &hashTable::randomGraph, this);
 	button_import_file->Bind(wxEVT_BUTTON, &hashTable::importFile, this);
-	button_insert->Bind(wxEVT_BUTTON, &hashTable::addValue, this);
+	button_insert->Bind(wxEVT_BUTTON, &hashTable::insertValue, this);
+	button_search->Bind(wxEVT_BUTTON, &hashTable::searchValue, this);
+	button_delete->Bind(wxEVT_BUTTON, &hashTable::deleteValue, this);
 	button_size->Bind(wxEVT_CHOICE, &hashTable::reDraw, this);
 
 	button_sbs->Bind(wxEVT_BUTTON, &hashTable::sbsModeOn, this);
@@ -89,7 +97,7 @@ void hashTable::importFile(wxCommandEvent& e) {
 		for (short i = 1; i <= cnt; ++i) {
 			input_insert->SetValue(input_value[i]);
 			wxCommandEvent empty_e = wxCommandEvent();
-			addValue(empty_e);
+			insertValue(empty_e);
 		}
 
 		Refresh();
@@ -113,7 +121,7 @@ void hashTable::randomGraph(wxCommandEvent& e) {
 		int x = getRandom(1, 999);
 		input_insert->SetValue(x);
 		wxCommandEvent empty_e = wxCommandEvent();
-		addValue(empty_e);
+		insertValue(empty_e);
 	}
 
 	Refresh();
@@ -196,8 +204,7 @@ void hashTable::resetColor() {
 	}
 }
 
-void hashTable::addValue(wxCommandEvent& e) {
-
+void hashTable::insertValue(wxCommandEvent& e) {
 	int val = input_insert->GetValue();
 	inp = val;
 	int modval = (val + 1000) % 100;
@@ -209,7 +216,13 @@ void hashTable::addValue(wxCommandEvent& e) {
 		button_create_random->Hide();
 		button_import_file->Hide();
 		button_insert->Hide();
+		button_search->Hide();
+		button_delete->Hide();
 		text_insert->Hide();
+		text_search->Hide();
+		text_delete->Hide();
+		input_insert->Hide();
+		input_search->Hide();
 		input_insert->Hide();
 		return;
 	}
@@ -269,6 +282,75 @@ void hashTable::addValue(wxCommandEvent& e) {
 	Refresh();
 }
 
+void hashTable::searchValue(wxCommandEvent& e) {
+	resetColor();
+	int val = input_search->GetValue();
+	inp = val;
+
+	if (sbs_mode == true && during_sbs == false) {
+		id = 2;
+		sbs_search = 0;
+		during_sbs = true;
+		button_create_random->Hide();
+		button_import_file->Hide();
+		button_insert->Hide();
+		button_search->Hide();
+		button_delete->Hide();
+		text_insert->Hide();
+		text_search->Hide();
+		text_delete->Hide();
+		input_insert->Hide();
+		input_search->Hide();
+		input_delete->Hide();
+		return;
+	}
+
+	bool tf = false;
+	if (val > 99) {
+		tf = true;
+	}
+
+	for (int i = 1; i < 30; ++i) {
+		if (T[i] == val) {
+			if (tf == false) {
+				tf = true;
+				continue;
+			}
+			cv[i][0] = getRandom(0, 255);
+			cv[i][1] = getRandom(0, 255);
+			cv[i][2] = getRandom(0, 255);
+			break;
+		}
+	}
+
+	Refresh();
+}
+
+void hashTable::deleteValue(wxCommandEvent& e) {
+	int val = input_search->GetValue();
+	inp = val;
+
+	if (sbs_mode == true && during_sbs == false) {
+		id = 2;
+		sbs_search = 0;
+		during_sbs = true;
+		button_create_random->Hide();
+		button_import_file->Hide();
+		button_insert->Hide();
+		button_search->Hide();
+		button_delete->Hide();
+		text_insert->Hide();
+		text_search->Hide();
+		text_delete->Hide();
+		input_insert->Hide();
+		input_search->Hide();
+		input_delete->Hide();
+		return;
+	}
+
+	Refresh();
+}
+
 // turn on the step by step mode
 void hashTable::sbsModeOn(wxCommandEvent& e) {
 	sbs_mode = true;
@@ -316,7 +398,7 @@ void hashTable::nextStep(wxCommandEvent& e) {
 			}
 			if (sbs_add_value == 0) {
 				wxCommandEvent empty_e = wxCommandEvent();
-				addValue(empty_e);
+				insertValue(empty_e);
 				for (int i = 29; 0 < i; --i) {
 					if (T[i] == inp) {
 						cv[i][0] = cv[i][1] = 0;
@@ -329,7 +411,7 @@ void hashTable::nextStep(wxCommandEvent& e) {
 		}
 		else if (sbs_add_value == 1) {
 			wxCommandEvent empty_e = wxCommandEvent();
-			addValue(empty_e);
+			insertValue(empty_e);
 			for (int i = 29; 0 < i; --i) {
 				if (T[i] == inp) {
 					cv[i][0] = cv[i][1] = 0;
@@ -344,13 +426,49 @@ void hashTable::nextStep(wxCommandEvent& e) {
 			resetColor();
 		}
 	}
+	else if (id == 2) {
+		if (sbs_search == 0) {
+			for (int i = 1; i <= n; ++i) {
+				if (T[i] == inp % 100) {
+					cv[i][0] = cv[i][1] = 0;
+					cv[i][2] = 200;
+					sbs_search = i;
+					break;
+				}
+			}
+			if (sbs_search == 0) {
+				during_sbs = false;
+			}
+		}
+		else if (sbs_search != 69) {
+			resetColor();
+			for (int i = sbs_search + 1; i < 30; ++i) {
+				if (T[i] == inp) {
+					cv[i][0] = cv[i][1] = 0;
+					cv[i][2] = 200;
+					sbs_search = 69;
+					break;
+				}
+			}
+		}
+		else {
+			during_sbs = false;
+			resetColor();
+		}
+	}
 
 	if (during_sbs == false) {
 		button_create_random->Show();
 		button_import_file->Show();
 		button_insert->Show();
+		button_search->Show();
+		button_delete->Show();
 		text_insert->Show();
+		text_search->Show();
+		text_delete->Show();
 		input_insert->Show();
+		input_search->Show();
+		input_delete->Show();
 	}
 
 	Refresh();

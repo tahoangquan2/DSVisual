@@ -9,19 +9,26 @@ hashTable::hashTable(wxPanel* parent) : wxPanel(parent) {
 	choices_size.Add("Big");
 
 	wxButton* button_back = new wxButton(this, wxID_ANY, "Go back", wxPoint(10, 10), wxSize(100, 25));
-	wxButton* button_create_random = new wxButton(this, wxID_ANY, "Create Random", wxPoint(850, 60), wxSize(110, 45));
-	wxButton* button_import_file = new wxButton(this, wxID_ANY, "Import File", wxPoint(850, 120), wxSize(110, 45));
-	wxButton* button_insert = new wxButton(this, wxID_ANY, "Add Value", wxPoint(850, 180), wxSize(110, 45));
+	button_create_random = new wxButton(this, wxID_ANY, "Create Random", wxPoint(850, 60), wxSize(110, 45));
+	button_import_file = new wxButton(this, wxID_ANY, "Import File", wxPoint(850, 120), wxSize(110, 45));
+	button_insert = new wxButton(this, wxID_ANY, "Add Value", wxPoint(850, 180), wxSize(110, 45));
 
-	wxStaticText* text_insert = new wxStaticText(this, wxID_ANY, "Value:", wxPoint(850, 230));
+	text_insert = new wxStaticText(this, wxID_ANY, "Value:", wxPoint(850, 230));
 
 	input_insert = new wxSpinCtrl(this, wxID_ANY, "", wxPoint(850, 250), wxSize(110, 25), wxSP_WRAP, -999, 999);
 
 	button_size = new wxChoice(this, wxID_ANY, wxPoint(950, 600), wxSize(90, 60), choices_size);
 	button_size->Select(0);
 
-	SetCursor(wxCursor(wxCURSOR_HAND));
+	button_sbs = new wxButton(this, wxID_ANY, "Step by Step", wxPoint(330, 10), wxSize(110, 45));
+	button_sbs2 = new wxButton(this, wxID_ANY, "Back to Normal", wxPoint(330, 10), wxSize(110, 45));
+	button_sbs2->Hide();
+	button_next = new wxButton(this, wxID_ANY, "Next", wxPoint(460, 10), wxSize(110, 45));
+	button_next->Hide();
+	button_skip = new wxButton(this, wxID_ANY, "Skip", wxPoint(590, 10), wxSize(110, 45));
+	button_skip->Hide();
 
+	SetCursor(wxCursor(wxCURSOR_HAND));
 	Bind(wxEVT_LEFT_DOWN, &hashTable::onLeftDown, this);
 	Bind(wxEVT_LEFT_UP, &hashTable::onLeftUp, this);
 	Bind(wxEVT_MOTION, &hashTable::onMouseMove, this);
@@ -33,6 +40,11 @@ hashTable::hashTable(wxPanel* parent) : wxPanel(parent) {
 	button_insert->Bind(wxEVT_BUTTON, &hashTable::addValue, this);
 	button_size->Bind(wxEVT_CHOICE, &hashTable::reDraw, this);
 
+	button_sbs->Bind(wxEVT_BUTTON, &hashTable::sbsModeOn, this);
+	button_sbs2->Bind(wxEVT_BUTTON, &hashTable::sbsModeOff, this);
+	button_next->Bind(wxEVT_BUTTON, &hashTable::nextStep, this);
+	button_skip->Bind(wxEVT_BUTTON, &hashTable::skipStep, this);
+
 	wxCommandEvent empty_e = wxCommandEvent();
 	randomGraph(empty_e);
 }
@@ -41,6 +53,7 @@ hashTable::hashTable(wxPanel* parent) : wxPanel(parent) {
 void hashTable::goBack(wxCommandEvent& e) {
 	wxCommandEvent empty_e = wxCommandEvent();
 	randomGraph(empty_e);
+	sbsModeOff(empty_e);
 	rGoToPanel(this, parent);
 }
 
@@ -184,8 +197,22 @@ void hashTable::resetColor() {
 }
 
 void hashTable::addValue(wxCommandEvent& e) {
+
 	int val = input_insert->GetValue();
+	inp = val;
 	int modval = (val + 1000) % 100;
+
+	if (sbs_mode == true && during_sbs == false) {
+		id = 1;
+		sbs_add_value = 0;
+		during_sbs = true;
+		button_create_random->Hide();
+		button_import_file->Hide();
+		button_insert->Hide();
+		text_insert->Hide();
+		input_insert->Hide();
+		return;
+	}
 
 	bool tf2 = false;
 	for (int i = 1; i < 30; ++i) {
@@ -240,4 +267,103 @@ void hashTable::addValue(wxCommandEvent& e) {
 	}
 
 	Refresh();
+}
+
+// turn on the step by step mode
+void hashTable::sbsModeOn(wxCommandEvent& e) {
+	sbs_mode = true;
+	button_sbs->Hide();
+	button_sbs2->Show();
+	button_next->Show();
+	button_skip->Show();
+
+	resetColor();
+	Refresh();
+}
+
+// turn off the step by step mode
+void hashTable::sbsModeOff(wxCommandEvent& e) {
+	wxCommandEvent empty_e = wxCommandEvent();
+	skipStep(empty_e);
+
+	sbs_mode = during_sbs = false;
+	button_sbs2->Hide();
+	button_sbs->Show();
+	button_next->Hide();
+	button_skip->Hide();
+
+	resetColor();
+	Refresh();
+}
+
+// go to the next step in the step by step mode
+void hashTable::nextStep(wxCommandEvent& e) {
+	if (during_sbs == false) {
+		return;
+	}
+
+	resetColor();
+
+	if (id == 1) {
+		if (sbs_add_value == 0) {
+			for (int i = 1; i < 30; ++i) {
+				if (T[i] == inp % 100) {
+					cv[i][0] = cv[i][1] = 0;
+					cv[i][2] = 200;
+					sbs_add_value = 1;
+					break;
+				}
+			}
+			if (sbs_add_value == 0) {
+				wxCommandEvent empty_e = wxCommandEvent();
+				addValue(empty_e);
+				for (int i = 29; 0 < i; --i) {
+					if (T[i] == inp) {
+						cv[i][0] = cv[i][1] = 0;
+						cv[i][2] = 200;
+						sbs_add_value = 2;
+						break;
+					}
+				}
+			}
+		}
+		else if (sbs_add_value == 1) {
+			wxCommandEvent empty_e = wxCommandEvent();
+			addValue(empty_e);
+			for (int i = 29; 0 < i; --i) {
+				if (T[i] == inp) {
+					cv[i][0] = cv[i][1] = 0;
+					cv[i][2] = 200;
+					sbs_add_value = 2;
+					break;
+				}
+			}
+		}
+		else {
+			during_sbs = false;
+			resetColor();
+		}
+	}
+
+	if (during_sbs == false) {
+		button_create_random->Show();
+		button_import_file->Show();
+		button_insert->Show();
+		text_insert->Show();
+		input_insert->Show();
+	}
+
+	Refresh();
+}
+
+// skip all the steps in the step by step mode
+void hashTable::skipStep(wxCommandEvent& e) {
+	if (during_sbs == false) {
+		return;
+	}
+
+	while (during_sbs == true) {
+		wxCommandEvent empty_e = wxCommandEvent();
+		nextStep(empty_e);
+	}
 }

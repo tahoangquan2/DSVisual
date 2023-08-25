@@ -15,6 +15,7 @@ public:
 	wxPanel* parent_queue = nullptr;
 	wxPanel* parent_graph = nullptr;
 	wxPanel* parent_hash_table = nullptr;
+	wxPanel* parent_max_heap = nullptr;
 
 	Umenu(wxPanel* parent);
 	void toSetting(wxCommandEvent& e);
@@ -27,5 +28,5 @@ public:
 	void toQueue(wxCommandEvent& e);
 	void toGraph(wxCommandEvent& e);
 	void toHashTable(wxCommandEvent& e);
-
+	void toMaxHeap(wxCommandEvent& e);
 };

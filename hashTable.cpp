@@ -19,9 +19,9 @@ hashTable::hashTable(wxPanel* parent) : wxPanel(parent) {
 	text_search = new wxStaticText(this, wxID_ANY, "Value Search:", wxPoint(850, 340));
 	text_delete = new wxStaticText(this, wxID_ANY, "Value Delete:", wxPoint(850, 450));
 
-	input_insert = new wxSpinCtrl(this, wxID_ANY, "", wxPoint(850, 250), wxSize(110, 25), wxSP_WRAP, -999, 999);
-	input_search = new wxSpinCtrl(this, wxID_ANY, "", wxPoint(850, 360), wxSize(110, 25), wxSP_WRAP, -999, 999);
-	input_delete = new wxSpinCtrl(this, wxID_ANY, "", wxPoint(850, 470), wxSize(110, 25), wxSP_WRAP, -999, 999);
+	input_insert = new wxSpinCtrl(this, wxID_ANY, "", wxPoint(850, 250), wxSize(110, 25), wxSP_WRAP, 1, 999);
+	input_search = new wxSpinCtrl(this, wxID_ANY, "", wxPoint(850, 360), wxSize(110, 25), wxSP_WRAP, 1, 999);
+	input_delete = new wxSpinCtrl(this, wxID_ANY, "", wxPoint(850, 470), wxSize(110, 25), wxSP_WRAP, 1, 999);
 
 	button_size = new wxChoice(this, wxID_ANY, wxPoint(950, 600), wxSize(90, 60), choices_size);
 	button_size->Select(0);
@@ -77,7 +77,7 @@ void hashTable::importFile(wxCommandEvent& e) {
 	std::ifstream file(file_path.ToStdString());
 
 	if (file.is_open()) {
-		int input_value[16], cnt = 0, line;
+		int input_value[30], cnt = 0, line;
 		while (file >> line) {
 			int val = 0;
 			++cnt;

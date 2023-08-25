@@ -11,6 +11,7 @@
 #include "Uqueue.h"
 #include "graph.h"
 #include "hashTable.h"
+#include "maxHeap.h"
 
 // UI for the main frame
 Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
@@ -62,6 +63,10 @@ Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 	u_hash_table->SetSize(size1, size2);
 	u_hash_table->Hide();
 
+	maxHeap* u_max_heap = new maxHeap(base);
+	u_max_heap->SetSize(size1, size2);
+	u_max_heap->Hide();
+
 	u_setting->parent = u_menu;
 	u_static_array->parent = u_menu;
 	u_dynamic_array->parent = u_menu;
@@ -72,6 +77,7 @@ Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 	u_queue->parent = u_menu;
 	u_graph->parent = u_menu;
 	u_hash_table->parent = u_menu;
+	u_max_heap->parent = u_menu;
 	u_menu->parent_setting = u_setting;
 	u_menu->parent_static_array = u_static_array;
 	u_menu->parent_dynamic_array = u_dynamic_array;
@@ -82,5 +88,5 @@ Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 	u_menu->parent_queue = u_queue;
 	u_menu->parent_graph = u_graph;
 	u_menu->parent_hash_table = u_hash_table;
-
+	u_menu->parent_max_heap = u_max_heap;
 }

@@ -28,3 +28,4 @@ const short box_size = 50;
 const short box_color = 225;
 
 const short rad[3] = {20, 25, 30};
+const short B[2] = {2, 4};

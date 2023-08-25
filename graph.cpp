@@ -1,7 +1,7 @@
 #include "graph.h"
 #include "receiver.h"
 
-// main page for UI queue
+// main page for UI graph
 graph::graph(wxPanel* parent) : wxPanel(parent) {
 	wxArrayString choices_style;
 	choices_style.Add("Circle");
@@ -139,7 +139,7 @@ void graph::randomGraph(wxCommandEvent& e) {
 	for (short i = 1; i <= 15; ++i) {
 		V[i] = std::make_pair(getRandom(100, 700), getRandom(100, 500));
 		for (short j = 0; j < 3; ++j) {
-			cv[i][j] = black[j];
+			cv[i][j] = 0;
 		}
 	}
 	bool exist[16][16] = {};
@@ -152,7 +152,7 @@ void graph::randomGraph(wxCommandEvent& e) {
 		exist[x][y] = exist[y][x] = true;
 		E[i] = std::make_pair(0, std::make_pair(x, y));
 		for (short j = 0; j < 3; ++j) {
-			ce[i][j] = black[j];
+			ce[i][j] = 0;
 		}
 	}
 

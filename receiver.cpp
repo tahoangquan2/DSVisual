@@ -16,7 +16,7 @@
 #include "Bstack.h"
 #include "Bqueue.h"
 
-// get a random number in range [l, r]
+// get a random number in range [l, r] - no negative number
 short getRandom(short l, short r) {
 	return (rand() % (r - l + 1)) + l;
 }

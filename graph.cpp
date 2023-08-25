@@ -1,9 +1,26 @@
 #include "graph.h"
 #include "receiver.h"
+#include <wx/event.h>
 
 // main page for UI queue
 graph::graph(wxPanel* parent) : wxPanel(parent) {
+	wxArrayString choices_style;
+	choices_style.Add("Circle");
+	choices_style.Add("Square");
+
+	wxArrayString choices_size;
+	choices_size.Add("Small");
+	choices_size.Add("Medium");
+	choices_size.Add("Big");
+
 	wxButton* button_back = new wxButton(this, wxID_ANY, "Go back", wxPoint(10, 10), wxSize(100, 25));
+
+	button_style = new wxChoice(this, wxID_ANY, wxPoint(850, 600), wxSize(90, 60), choices_style);
+	button_size = new wxChoice(this, wxID_ANY, wxPoint(950, 600), wxSize(90, 60), choices_size);
+
+	button_style->Select(0);
+	button_size->Select(0);
+
 	SetCursor(wxCursor(wxCURSOR_HAND));
 
 	Bind(wxEVT_LEFT_DOWN, &graph::onLeftDown, this);
@@ -12,6 +29,9 @@ graph::graph(wxPanel* parent) : wxPanel(parent) {
 	Bind(wxEVT_PAINT, &graph::onPaint, this);
 
 	button_back->Bind(wxEVT_BUTTON, &graph::goBack, this);
+	button_style->Bind(wxEVT_CHOICE, &graph::reDraw, this);
+	button_size->Bind(wxEVT_CHOICE, &graph::reDraw, this);
+
 	randomGraph();
 }
 
@@ -48,7 +68,7 @@ void graph::randomGraph() {
 
 void graph::onLeftDown(wxMouseEvent& e) {
 	for (short i = 1; i <= n; ++i) {
-		wxRect insideRect(V[i].first - rad, V[i].second - rad, rad << 2, rad << 2);
+		wxRect insideRect(V[i].first - rad[sz], V[i].second - rad[sz], rad[sz] << 2, rad[sz] << 2);
 		if (insideRect.Contains(e.GetPosition())) {
 			drag[i] = true;
 			break;
@@ -92,9 +112,22 @@ void graph::onPaint(wxPaintEvent& e) {
 	// draw vertex
 	for (short i = 1; i <= n; ++i) {
 		dc.SetPen(wxPen(wxColour(cv[0][i], cv[1][i], cv[2][i]), 1));
-		dc.DrawCircle(wxPoint(V[i].first, V[i].second), rad);
+
+		if (style == 0) {
+			dc.DrawCircle(wxPoint(V[i].first, V[i].second), rad[sz]);
+		}
+		else {
+			dc.DrawRectangle(wxPoint(V[i].first - rad[sz], V[i].second - rad[sz]), wxSize(rad[sz] << 1, rad[sz] << 1));
+		}
+
 		wxString text = "";
 		text << T[i];
 		dc.DrawText(text, wxPoint(V[i].first - 4, V[i].second - 6));
 	}
+}
+
+void graph::reDraw(wxCommandEvent& e) {
+	style = button_style->GetSelection();
+	sz = button_size->GetSelection();
+	Refresh();
 }

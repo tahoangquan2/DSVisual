@@ -25,6 +25,6 @@ const short box_y = 220;
 const short box_size = 50;
 const short box_color = 225;
 
-const short rad = 20;
+const short rad[3] = {20, 25, 30};
 
 const short black[3] = {0, 0, 0};

@@ -5,7 +5,9 @@ class graph : public wxPanel {
 public:
 	wxPanel* parent = nullptr;
 	wxPoint mouse_pos;
-	short n, m;
+	wxChoice* button_style;
+	wxChoice* button_size;
+	short n, m, style, sz;
 	std::pair<short, short> V[16], E[50];
 	short cv[3][16], ce[3][16], T[16], W[50];
 	bool drag[16];
@@ -18,4 +20,5 @@ public:
 	void onLeftUp(wxMouseEvent& e);
 	void onMouseMove(wxMouseEvent& e);
 	void onPaint(wxPaintEvent& e);
+	void reDraw(wxCommandEvent& e);
 };

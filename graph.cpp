@@ -14,6 +14,7 @@ graph::graph(wxPanel* parent) : wxPanel(parent) {
 	choices_size.Add("Big");
 
 	wxButton* button_back = new wxButton(this, wxID_ANY, "Go back", wxPoint(10, 10), wxSize(100, 25));
+	wxButton* button_import_file = new wxButton(this, wxID_ANY, "Import File", wxPoint(200, 570), wxSize(110, 45));
 
 	button_style = new wxChoice(this, wxID_ANY, wxPoint(850, 600), wxSize(90, 60), choices_style);
 	button_size = new wxChoice(this, wxID_ANY, wxPoint(950, 600), wxSize(90, 60), choices_size);
@@ -29,6 +30,7 @@ graph::graph(wxPanel* parent) : wxPanel(parent) {
 	Bind(wxEVT_PAINT, &graph::onPaint, this);
 
 	button_back->Bind(wxEVT_BUTTON, &graph::goBack, this);
+	button_import_file->Bind(wxEVT_BUTTON, &graph::importFile, this);
 	button_style->Bind(wxEVT_CHOICE, &graph::reDraw, this);
 	button_size->Bind(wxEVT_CHOICE, &graph::reDraw, this);
 
@@ -41,11 +43,73 @@ void graph::goBack(wxCommandEvent& e) {
 	rGoToPanel(this, parent);
 }
 
+// import the outside file
+void graph::importFile(wxCommandEvent& e) {
+	wxFileDialog open_file_dialog(this, _("Open File"), "", "", "Text files (*.txt)|*.txt", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+
+	if (open_file_dialog.ShowModal() == wxID_CANCEL) {
+		return;
+	}
+
+	wxString file_path = open_file_dialog.GetPath();
+	std::ifstream file(file_path.ToStdString());
+
+	if (file.is_open()) {
+		int input_value[50][3], cnt_m = 0;
+		std::string line;
+		while (std::getline(file, line)) {
+			int v[3] = {0, 0, 0}, cnt = 0;
+			for (short i = 0; i < line.size(); ++i) {
+				if ('0' <= line[i] && line[i] <= '9') {
+					v[cnt] = v[cnt] * 10 + int(line[i]) - int('0');
+					if (cnt <= 1 && (v[cnt] < 1 || v[cnt] > 15)) {
+						showError("Value must be in range [1, 15]");
+						return;
+					}
+					else if (cnt == 2 && (v[cnt] < 0 || v[cnt] > 100000000)) {
+						showError("Value must be in range [0, 100000000]");
+						return;
+					}
+				}
+				else {
+					++cnt;
+					if (cnt > 2) {
+						break;
+					}
+				}
+			}
+			++cnt_m;
+			if (cnt_m >= 50) {
+				showError("Number of edges must be in range [0, 49]");
+				return;
+			}
+			for (short j = 0; j < 3; ++j) {
+				input_value[cnt_m][j] = v[j];
+			}
+		}
+		file.close();
+
+		n = 0;
+		m = cnt_m;
+		for (short i = 1; i <= cnt_m; ++i) {
+			n = std::max(int(n), input_value[i][0]);
+			n = std::max(int(n), input_value[i][1]);
+			E[i].first = input_value[i][0];
+			E[i].second = input_value[i][1];
+			W[i] = input_value[i][2];
+		}
+		Refresh();
+	}
+	else {
+		showError("Cannot open file");
+	}
+}
+
 // create a random graph
 void graph::randomGraph() {
 	n = getRandom(3, 12);
 	m = getRandom(2, std::min((n * (n - 1)) >> 1, 20));
-	for (short i = 1; i <= n; ++i) {
+	for (short i = 1; i <= 15; ++i) {
 		V[i] = std::make_pair(getRandom(100, 700), getRandom(100, 500));
 		T[i] = i;
 		for (short j = 0; j < 3; ++j) {
@@ -59,7 +123,7 @@ void graph::randomGraph() {
 			y = getRandom(1, n);
 		} while (x == y);
 		E[i] = std::make_pair(x, y);
-		W[i] = 1;
+		W[i] = 0;
 		for (short j = 0; j < 3; ++j) {
 			ce[j][i] = black[j];
 		}
@@ -102,7 +166,7 @@ void graph::onPaint(wxPaintEvent& e) {
 	for (short i = 1; i <= m; ++i) {
 		dc.SetPen(wxPen(wxColour(ce[0][i], ce[1][i], ce[2][i]), 1));
 		dc.DrawLine(wxPoint(V[E[i].first].first, V[E[i].first].second), wxPoint(V[E[i].second].first, V[E[i].second].second));
-		if (W[i] != 1) {
+		if (W[i] != 0) {
 			wxString text = "";
 			text << W[i];
 			dc.DrawText(text, wxPoint((V[E[i].first].first + V[E[i].second].first) / 2.0, (V[E[i].first].second + V[E[i].second].second) / 2.0));

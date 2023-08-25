@@ -7,6 +7,8 @@
 #include <fstream>
 #include <vector>
 #include <math.h>
+#include <algorithm>
+
 
 const short id_static_array = 1;
 const short id_dynamic_array = 2;

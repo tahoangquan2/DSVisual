@@ -17,6 +17,7 @@ Umenu::Umenu(wxPanel* parent) : wxPanel(parent) {
 	wxButton* button_to_queue = new wxButton(base, wxID_ANY, "Queue", wxPoint(150, 480), wxSize(200, 50));
 
 	wxButton* button_to_graph = new wxButton(base, wxID_ANY, "Graph", wxPoint(400, 120), wxSize(200, 50));
+	wxButton* button_to_hash_table = new wxButton(base, wxID_ANY, "Hash Table", wxPoint(400, 180), wxSize(200, 50));
 
 	//button_to_setting->Bind(wxEVT_BUTTON, &Umenu::toSetting, this);
 	button_to_static_array->Bind(wxEVT_BUTTON, &Umenu::toStaticArray, this);
@@ -28,6 +29,7 @@ Umenu::Umenu(wxPanel* parent) : wxPanel(parent) {
 	button_to_queue->Bind(wxEVT_BUTTON, &Umenu::toQueue, this);
 
 	button_to_graph->Bind(wxEVT_BUTTON, &Umenu::toGraph, this);
+	button_to_hash_table->Bind(wxEVT_BUTTON, &Umenu::toHashTable, this);
 }
 
 // go to setting
@@ -73,4 +75,9 @@ void Umenu::toQueue(wxCommandEvent& e) {
 // go to graph
 void Umenu::toGraph(wxCommandEvent& e) {
 	rGoToPanel(this, parent_graph);
+}
+
+// go to hash table
+void Umenu::toHashTable(wxCommandEvent& e) {
+	rGoToPanel(this, parent_hash_table);
 }

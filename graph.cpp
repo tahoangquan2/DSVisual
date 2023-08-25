@@ -1,6 +1,5 @@
 #include "graph.h"
 #include "receiver.h"
-#include <wx/event.h>
 
 // main page for UI queue
 graph::graph(wxPanel* parent) : wxPanel(parent) {
@@ -23,11 +22,11 @@ graph::graph(wxPanel* parent) : wxPanel(parent) {
 	button_style = new wxChoice(this, wxID_ANY, wxPoint(850, 600), wxSize(90, 60), choices_style);
 	button_size = new wxChoice(this, wxID_ANY, wxPoint(950, 600), wxSize(90, 60), choices_size);
 
-	wxStaticText* text_start = new wxStaticText(this, wxID_ANY, "Position:", wxPoint(330, 512));
-	wxStaticText* text_end = new wxStaticText(this, wxID_ANY, "Value:", wxPoint(330, 452));
+	wxStaticText* text_start = new wxStaticText(this, wxID_ANY, "Position:", wxPoint(850, 350));
+	wxStaticText* text_end = new wxStaticText(this, wxID_ANY, "Value:", wxPoint(850, 400));
 
-	input_start = new wxSpinCtrl(this, wxID_ANY, "", wxPoint(330, 530), wxSize(110, 25), wxSP_WRAP, 1, 1);
-	input_end = new wxSpinCtrl(this, wxID_ANY, "", wxPoint(330, 470), wxSize(110, 25), wxSP_WRAP, 1, 1);
+	input_start = new wxSpinCtrl(this, wxID_ANY, "", wxPoint(850, 370), wxSize(110, 25), wxSP_WRAP, 1, 1);
+	input_end = new wxSpinCtrl(this, wxID_ANY, "", wxPoint(850, 420), wxSize(110, 25), wxSP_WRAP, 1, 1);
 
 	button_style->Select(0);
 	button_size->Select(0);
@@ -136,19 +135,21 @@ void graph::importFile(wxCommandEvent& e) {
 // create a random graph
 void graph::randomGraph(wxCommandEvent& e) {
 	n = getRandom(3, 12);
-	m = getRandom(2, std::min((n * (n - 1)) >> 1, 20));
+	m = getRandom(2, std::min(((n * (n - 1)) >> 1) - 1, 20));
 	for (short i = 1; i <= 15; ++i) {
 		V[i] = std::make_pair(getRandom(100, 700), getRandom(100, 500));
 		for (short j = 0; j < 3; ++j) {
 			cv[i][j] = black[j];
 		}
 	}
+	bool exist[16][16] = {};
 	for (short i = 1; i <= m; ++i) {
 		short x, y;
 		do {
 			x = getRandom(1, n);
 			y = getRandom(1, n);
-		} while (x == y);
+		} while (x == y || exist[x][y]);
+		exist[x][y] = exist[y][x] = true;
 		E[i] = std::make_pair(0, std::make_pair(x, y));
 		for (short j = 0; j < 3; ++j) {
 			ce[i][j] = black[j];

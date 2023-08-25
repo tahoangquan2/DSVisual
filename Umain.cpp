@@ -10,6 +10,7 @@
 #include "Ustack.h"
 #include "Uqueue.h"
 #include "graph.h"
+#include "hashTable.h"
 
 // UI for the main frame
 Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
@@ -57,6 +58,10 @@ Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 	u_graph->SetSize(size1, size2);
 	u_graph->Hide();
 
+	hashTable* u_hash_table = new hashTable(base);
+	u_hash_table->SetSize(size1, size2);
+	u_hash_table->Hide();
+
 	u_setting->parent = u_menu;
 	u_static_array->parent = u_menu;
 	u_dynamic_array->parent = u_menu;
@@ -66,6 +71,7 @@ Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 	u_stack->parent = u_menu;
 	u_queue->parent = u_menu;
 	u_graph->parent = u_menu;
+	u_hash_table->parent = u_menu;
 	u_menu->parent_setting = u_setting;
 	u_menu->parent_static_array = u_static_array;
 	u_menu->parent_dynamic_array = u_dynamic_array;
@@ -75,5 +81,6 @@ Umain::Umain(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 	u_menu->parent_stack = u_stack;
 	u_menu->parent_queue = u_queue;
 	u_menu->parent_graph = u_graph;
+	u_menu->parent_hash_table = u_hash_table;
 
 }

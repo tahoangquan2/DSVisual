@@ -14,6 +14,7 @@ public:
 	wxPanel* parent_stack = nullptr;
 	wxPanel* parent_queue = nullptr;
 	wxPanel* parent_graph = nullptr;
+	wxPanel* parent_hash_table = nullptr;
 
 	Umenu(wxPanel* parent);
 	void toSetting(wxCommandEvent& e);
@@ -25,5 +26,6 @@ public:
 	void toStack(wxCommandEvent& e);
 	void toQueue(wxCommandEvent& e);
 	void toGraph(wxCommandEvent& e);
+	void toHashTable(wxCommandEvent& e);
 
 };

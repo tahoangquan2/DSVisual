@@ -163,8 +163,6 @@ void hashTable::onPaint(wxPaintEvent& e) {
 	// draw edge
 	for (short i = 1; i < 100; ++i) {
 		if (T[E[i].first] == -1 || T[E[i].second] == -1) {
-			E[i].first = 0;
-			E[i].second = 0;
 			continue;
 		}
 
@@ -226,7 +224,7 @@ void hashTable::insertValue(wxCommandEvent& e) {
 		text_delete->Hide();
 		input_insert->Hide();
 		input_search->Hide();
-		input_insert->Hide();
+		input_delete->Hide();
 		return;
 	}
 
@@ -351,34 +349,33 @@ void hashTable::deleteValue(wxCommandEvent& e) {
 		input_delete->Hide();
 		return;
 	}
-
+	
 	bool tf = false;
 	if (val > 99) {
 		tf = true;
 	}
-	
-	int cnt = 0;
+
 	for (int i = 1; i < 30; ++i) {
-		if (T[i] > 0 && T[i] % 100 == val % 100) {
-			++cnt;
+		if (T[i] == val) {
+			if (tf == false) {
+				tf = true;
+				continue;
+			}
+			T[i] = -1;
+			break;
 		}
 	}
 
-	if (cnt > 2) {
-		for (int i = 1; i < 30; ++i) {
-			if (T[i] > 0 && T[i] == val) {
-				if (tf == false) {
+	for (int i = 1; i < 30; ++i) {
+		if (T[i] == val % 100) {
+			bool tf = false;
+			for (int j = i + 1; j < 30; ++j) {
+				if (T[j] == val % 100) {
 					tf = true;
-					continue;
+					break;
 				}
-				T[i] = -1;
-				break;
 			}
-		}
-	}
-	else {
-		for (int i = 1; i < 30; ++i) {
-			if (T[i] > 0 && T[i] % 100 == val % 100) {
+			if (tf == false) {
 				T[i] = -1;
 			}
 		}
@@ -425,7 +422,7 @@ void hashTable::nextStep(wxCommandEvent& e) {
 	if (id == 1) {
 		if (sbs_add_value == 0) {
 			for (int i = 1; i < 30; ++i) {
-				if (T[i] > 0 && T[i] == inp % 100) {
+				if (T[i] == inp % 100) {
 					cv[i][0] = cv[i][1] = 0;
 					cv[i][2] = 200;
 					sbs_add_value = 1;
@@ -465,7 +462,7 @@ void hashTable::nextStep(wxCommandEvent& e) {
 	else if (id == 2) {
 		if (sbs_search == 0) {
 			for (int i = 1; i <= n; ++i) {
-				if (T[i] > 0 && T[i] == inp % 100) {
+				if (T[i] == inp % 100) {
 					cv[i][0] = cv[i][1] = 0;
 					cv[i][2] = 200;
 					sbs_search = i;
@@ -477,7 +474,6 @@ void hashTable::nextStep(wxCommandEvent& e) {
 			}
 		}
 		else if (sbs_search != 69) {
-			resetColor();
 			for (int i = sbs_search + 1; i < 30; ++i) {
 				if (T[i] == inp) {
 					cv[i][0] = cv[i][1] = 0;
@@ -486,8 +482,46 @@ void hashTable::nextStep(wxCommandEvent& e) {
 					break;
 				}
 			}
+			if (sbs_search != 69) {
+				during_sbs = false;
+			}
 		}
 		else {
+			during_sbs = false;
+			resetColor();
+		}
+	}
+	else {
+		if (sbs_delete == 0) {
+			for (int i = 1; i <= n; ++i) {
+				if (T[i] == inp % 100) {
+					cv[i][0] = cv[i][1] = 0;
+					cv[i][2] = 200;
+					sbs_delete = i;
+					break;
+				}
+
+			}
+			if (sbs_delete == 0) {
+				during_sbs = false;
+			}
+		}
+		else if (sbs_delete != 69) {
+			for (int i = sbs_delete + 1; i < 30; ++i) {
+				if (T[i] == inp) {
+					cv[i][0] = cv[i][1] = 0;
+					cv[i][2] = 200;
+					sbs_delete = 69;
+					break;
+				}
+			}
+			if (sbs_delete != 69) {
+				during_sbs = false;
+			}
+		}
+		else {
+			wxCommandEvent empty_e = wxCommandEvent();
+			deleteValue(empty_e);
 			during_sbs = false;
 			resetColor();
 		}

@@ -2,7 +2,7 @@
 
 // receive every signal from UI and translate to the backend
 
-// for receiver
+// for receiver / system
 short getRandom(short l, short r);
 void showError(wxString message);
 void drawBox(wxPanel** boxs, wxPanel* base, short pos, short val, short mode);

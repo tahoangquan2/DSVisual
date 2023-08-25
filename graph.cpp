@@ -18,9 +18,16 @@ graph::graph(wxPanel* parent) : wxPanel(parent) {
 	wxButton* button_import_file = new wxButton(this, wxID_ANY, "Import File", wxPoint(850, 120), wxSize(110, 45));
 	wxButton* button_cc = new wxButton(this, wxID_ANY, "Find CC", wxPoint(850, 180), wxSize(110, 45));
 	wxButton* button_mst = new wxButton(this, wxID_ANY, "Find MST", wxPoint(850, 240), wxSize(110, 45));
+	wxButton* button_sp = new wxButton(this, wxID_ANY, "Find SP", wxPoint(850, 300), wxSize(110, 45));
 
 	button_style = new wxChoice(this, wxID_ANY, wxPoint(850, 600), wxSize(90, 60), choices_style);
 	button_size = new wxChoice(this, wxID_ANY, wxPoint(950, 600), wxSize(90, 60), choices_size);
+
+	wxStaticText* text_start = new wxStaticText(this, wxID_ANY, "Position:", wxPoint(330, 512));
+	wxStaticText* text_end = new wxStaticText(this, wxID_ANY, "Value:", wxPoint(330, 452));
+
+	input_start = new wxSpinCtrl(this, wxID_ANY, "", wxPoint(330, 530), wxSize(110, 25), wxSP_WRAP, 1, 1);
+	input_end = new wxSpinCtrl(this, wxID_ANY, "", wxPoint(330, 470), wxSize(110, 25), wxSP_WRAP, 1, 1);
 
 	button_style->Select(0);
 	button_size->Select(0);
@@ -37,6 +44,7 @@ graph::graph(wxPanel* parent) : wxPanel(parent) {
 	button_import_file->Bind(wxEVT_BUTTON, &graph::importFile, this);
 	button_cc->Bind(wxEVT_BUTTON, &graph::findCC, this);
 	button_mst->Bind(wxEVT_BUTTON, &graph::findMST, this);
+	button_sp->Bind(wxEVT_BUTTON, &graph::findSP, this);
 	button_style->Bind(wxEVT_CHOICE, &graph::reDraw, this);
 	button_size->Bind(wxEVT_CHOICE, &graph::reDraw, this);
 
@@ -117,6 +125,12 @@ void graph::importFile(wxCommandEvent& e) {
 	else {
 		showError("Cannot open file");
 	}
+
+	input_start->SetRange(1, n);
+	input_end->SetRange(1, n);
+
+	input_start->SetValue(1);
+	input_end->SetValue(n);
 }
 
 // create a random graph
@@ -140,6 +154,12 @@ void graph::randomGraph(wxCommandEvent& e) {
 			ce[i][j] = black[j];
 		}
 	}
+
+	input_start->SetRange(1, n);
+	input_end->SetRange(1, n);
+
+	input_start->SetValue(1);
+	input_end->SetValue(n);
 
 	Refresh();
 }
@@ -290,5 +310,77 @@ void graph::findMST(wxCommandEvent& e) {
 			ce[i][2] = z;
 		}
 	}
+
+	Refresh();
+}
+
+// find shortest path
+void graph::findSP(wxCommandEvent& e) {
+	for (short i = 1; i <= m; ++i) {
+		ce[i][0] = ce[i][1] = ce[i][2] = 0;
+	}
+
+	for (short i = 1; i <= n; ++i) {
+		cv[i][0] = cv[i][1] = cv[i][2] = 0;
+	}
+
+	short st = input_start->GetValue();
+	short en = input_end->GetValue();
+
+	memset(dis, 63, sizeof(dis));
+	memset(vis, false, sizeof(vis));
+	dis[st] = 0;
+	vis[st] = true;
+	short mi;
+
+	for (short j = 1; j <= n; ++j) {
+		mi = 0;
+		for (short i = 1; i <= m; ++i) {
+			short u = E[i].second.first;
+			short v = E[i].second.second;
+			if (vis[v] == true && vis[u] == false && dis[v] + E[i].first < dis[u]) {
+				dis[u] = dis[v] + E[i].first;
+				tr[u] = v;
+			}
+			if (vis[u] == true && vis[v] == false && dis[u] + E[i].first < dis[v]) {
+				dis[v] = dis[u] + E[i].first;
+				tr[v] = u;
+			}
+		}
+		for (short i = 1; i <= n; ++i) {
+			if (vis[i] == true) {
+				continue;
+			}
+			if (dis[mi] > dis[i]) {
+				mi = i;
+			}
+		}
+		if (mi == 0) {
+			break;
+		}
+		vis[mi] = true;
+	}
+
+	if (dis[en] < dis[0]) {
+		x = getRandom(0, 255);
+		y = getRandom(0, 255);
+		z = getRandom(0, 255);
+		while (en != st) {
+			for (short i = 1; i <= m; ++i) {
+				short u = E[i].second.first;
+				short v = E[i].second.second;
+				if ((u == en && v == tr[en]) || ((v == en && u == tr[en]))) {
+					cv[u][0] = cv[v][0] = x;
+					cv[u][1] = cv[v][1] = y;
+					cv[u][2] = cv[v][2] = z;
+					ce[i][0] = x;
+					ce[i][1] = y;
+					ce[i][2] = z;
+				}
+			}
+			en = tr[en];
+		}
+	}
+
 	Refresh();
 }

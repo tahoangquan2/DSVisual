@@ -14,7 +14,8 @@ graph::graph(wxPanel* parent) : wxPanel(parent) {
 	choices_size.Add("Big");
 
 	wxButton* button_back = new wxButton(this, wxID_ANY, "Go back", wxPoint(10, 10), wxSize(100, 25));
-	wxButton* button_import_file = new wxButton(this, wxID_ANY, "Import File", wxPoint(200, 570), wxSize(110, 45));
+	wxButton* button_create_random = new wxButton(this, wxID_ANY, "Create Random", wxPoint(850, 60), wxSize(110, 45));
+	wxButton* button_import_file = new wxButton(this, wxID_ANY, "Import File", wxPoint(850, 120), wxSize(110, 45));
 
 	button_style = new wxChoice(this, wxID_ANY, wxPoint(850, 600), wxSize(90, 60), choices_style);
 	button_size = new wxChoice(this, wxID_ANY, wxPoint(950, 600), wxSize(90, 60), choices_size);
@@ -30,16 +31,19 @@ graph::graph(wxPanel* parent) : wxPanel(parent) {
 	Bind(wxEVT_PAINT, &graph::onPaint, this);
 
 	button_back->Bind(wxEVT_BUTTON, &graph::goBack, this);
+	button_create_random->Bind(wxEVT_BUTTON, &graph::randomGraph, this);
 	button_import_file->Bind(wxEVT_BUTTON, &graph::importFile, this);
 	button_style->Bind(wxEVT_CHOICE, &graph::reDraw, this);
 	button_size->Bind(wxEVT_CHOICE, &graph::reDraw, this);
 
-	randomGraph();
+	wxCommandEvent empty_e = wxCommandEvent();
+	randomGraph(empty_e);
 }
 
 // go back to menu
 void graph::goBack(wxCommandEvent& e) {
-	randomGraph();
+	wxCommandEvent empty_e = wxCommandEvent();
+	randomGraph(empty_e);
 	rGoToPanel(this, parent);
 }
 
@@ -106,12 +110,11 @@ void graph::importFile(wxCommandEvent& e) {
 }
 
 // create a random graph
-void graph::randomGraph() {
+void graph::randomGraph(wxCommandEvent& e) {
 	n = getRandom(3, 12);
 	m = getRandom(2, std::min((n * (n - 1)) >> 1, 20));
 	for (short i = 1; i <= 15; ++i) {
 		V[i] = std::make_pair(getRandom(100, 700), getRandom(100, 500));
-		T[i] = i;
 		for (short j = 0; j < 3; ++j) {
 			cv[j][i] = black[j];
 		}
@@ -128,6 +131,8 @@ void graph::randomGraph() {
 			ce[j][i] = black[j];
 		}
 	}
+
+	Refresh();
 }
 
 void graph::onLeftDown(wxMouseEvent& e) {
@@ -158,6 +163,7 @@ void graph::onMouseMove(wxMouseEvent& e) {
 	}
 }
 
+// draw graph
 void graph::onPaint(wxPaintEvent& e) {
 	wxAutoBufferedPaintDC dc(this);
 	dc.Clear();
@@ -174,6 +180,7 @@ void graph::onPaint(wxPaintEvent& e) {
 	}
 
 	// draw vertex
+	wxString text, tt = "";
 	for (short i = 1; i <= n; ++i) {
 		dc.SetPen(wxPen(wxColour(cv[0][i], cv[1][i], cv[2][i]), 1));
 
@@ -184,8 +191,8 @@ void graph::onPaint(wxPaintEvent& e) {
 			dc.DrawRectangle(wxPoint(V[i].first - rad[sz], V[i].second - rad[sz]), wxSize(rad[sz] << 1, rad[sz] << 1));
 		}
 
-		wxString text = "";
-		text << T[i];
+		text = "";
+		text << i;
 		dc.DrawText(text, wxPoint(V[i].first - 4, V[i].second - 6));
 	}
 }

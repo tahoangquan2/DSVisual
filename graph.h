@@ -9,13 +9,13 @@ public:
 	wxChoice* button_size;
 	short n, m, style, sz;
 	std::pair<short, short> V[16], E[50];
-	short cv[3][16], ce[3][16], T[16];
+	short cv[3][16], ce[3][16];
 	int W[50];
 	bool drag[16];
 
 	graph(wxPanel* parent);
 
-	void randomGraph();
+	void randomGraph(wxCommandEvent& e);
 	void goBack(wxCommandEvent& e);
 	void importFile(wxCommandEvent& e);
 	void onLeftDown(wxMouseEvent& e);

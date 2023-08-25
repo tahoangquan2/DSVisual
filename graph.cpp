@@ -16,6 +16,7 @@ graph::graph(wxPanel* parent) : wxPanel(parent) {
 	wxButton* button_back = new wxButton(this, wxID_ANY, "Go back", wxPoint(10, 10), wxSize(100, 25));
 	wxButton* button_create_random = new wxButton(this, wxID_ANY, "Create Random", wxPoint(850, 60), wxSize(110, 45));
 	wxButton* button_import_file = new wxButton(this, wxID_ANY, "Import File", wxPoint(850, 120), wxSize(110, 45));
+	wxButton* button_cc = new wxButton(this, wxID_ANY, "Connected Componets", wxPoint(850, 180), wxSize(110, 45));
 
 	button_style = new wxChoice(this, wxID_ANY, wxPoint(850, 600), wxSize(90, 60), choices_style);
 	button_size = new wxChoice(this, wxID_ANY, wxPoint(950, 600), wxSize(90, 60), choices_size);
@@ -33,6 +34,7 @@ graph::graph(wxPanel* parent) : wxPanel(parent) {
 	button_back->Bind(wxEVT_BUTTON, &graph::goBack, this);
 	button_create_random->Bind(wxEVT_BUTTON, &graph::randomGraph, this);
 	button_import_file->Bind(wxEVT_BUTTON, &graph::importFile, this);
+	button_cc->Bind(wxEVT_BUTTON, &graph::findCC, this);
 	button_style->Bind(wxEVT_CHOICE, &graph::reDraw, this);
 	button_size->Bind(wxEVT_CHOICE, &graph::reDraw, this);
 
@@ -116,7 +118,7 @@ void graph::randomGraph(wxCommandEvent& e) {
 	for (short i = 1; i <= 15; ++i) {
 		V[i] = std::make_pair(getRandom(100, 700), getRandom(100, 500));
 		for (short j = 0; j < 3; ++j) {
-			cv[j][i] = black[j];
+			cv[i][j] = black[j];
 		}
 	}
 	for (short i = 1; i <= m; ++i) {
@@ -128,7 +130,7 @@ void graph::randomGraph(wxCommandEvent& e) {
 		E[i] = std::make_pair(x, y);
 		W[i] = 0;
 		for (short j = 0; j < 3; ++j) {
-			ce[j][i] = black[j];
+			ce[i][j] = black[j];
 		}
 	}
 
@@ -182,7 +184,7 @@ void graph::onPaint(wxPaintEvent& e) {
 	// draw vertex
 	wxString text, tt = "";
 	for (short i = 1; i <= n; ++i) {
-		dc.SetPen(wxPen(wxColour(cv[0][i], cv[1][i], cv[2][i]), 1));
+		dc.SetPen(wxPen(wxColour(cv[i][0], cv[i][1], cv[i][2]), 2));
 
 		if (style == 0) {
 			dc.DrawCircle(wxPoint(V[i].first, V[i].second), rad[sz]);
@@ -200,5 +202,37 @@ void graph::onPaint(wxPaintEvent& e) {
 void graph::reDraw(wxCommandEvent& e) {
 	style = button_style->GetSelection();
 	sz = button_size->GetSelection();
+	Refresh();
+}
+
+// find connected components
+void graph::dfsCC(short u) {
+	vis[u] = true;
+	cv[u][0] = x;
+	cv[u][1] = y;
+	cv[u][2] = z;
+	for (int i = 1; i <= m; ++i) {
+		if (E[i].first == u || E[i].second == u) {
+			if (vis[E[i].first] == false) {
+				dfsCC(E[i].first);
+			}
+			if (vis[E[i].second] == false) {
+				dfsCC(E[i].second);
+			}
+		}
+	}
+}
+
+void graph::findCC(wxCommandEvent& e) {
+	memset(vis, false, sizeof(vis));
+	for (short i = 1; i <= n; ++i) {
+		if (vis[i]) {
+			continue;
+		}
+		x = getRandom(0, 255);
+		y = getRandom(0, 255);
+		z = getRandom(0, 255);
+		dfsCC(i);
+	}
 	Refresh();
 }
